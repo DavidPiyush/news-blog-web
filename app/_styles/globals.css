@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components{
+
+.gradient-header-background{
+  background: linear-gradient(90deg, #8e44ad 0%, #f80759 100%)
+}
+.gradient-nav-hover:hover,
+.gradient-nav-hover:active {
+  background: linear-gradient(90deg, #F80759 0%, #8E44AD 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: brightness(1.1); /* Optional: Slight brightening on hover */
+  transition: all 0.3s ease; /* Smooth transition */
+  filter: brightness(1.2); /* Slight brightening effect */
+  opacity: 0.9; /* Reduce opacity for hover effect */
+}
+
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.gradient-nav-hover-color:hover{
+  color:linear-gradient(90deg, #F80759 0%, #8E44AD 100%) ;
+  stroke: linear-gradient(90deg, #F80759 0%, #8E44AD 100%);
+}
+
+.spinner {
+    margin: 3.2rem auto 1.6rem;
+    width: 60px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 8px solid red; /*change the color */
+    border-right-color: red; /*change the color */
+    animation: rotate 1s infinite linear;
+  }
+
+  .spinner-mini {
+    margin: 0;
+    width: 20px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid red; /*change the color */
+    border-right-color: transparent;
+    animation: rotate 1s infinite linear;
+  }
+
+  @keyframes rotate {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+}
