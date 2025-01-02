@@ -9,8 +9,9 @@ import { getUser } from "../_lib/data-service";
 import Image from "next/image";
 import { getGreeting, getRandomEmoji } from "../_lib/helper";
 import ProfileDialogBox from "./ProfileDialogBox";
-import NotificationDropdown from "./NotificationDropDown";
+
 import { getServerSession } from "next-auth";
+import NotificationDropdown from "./NotificationDropdown";
 
 async function DashboardHeader() {
   const session = await getServerSession();
