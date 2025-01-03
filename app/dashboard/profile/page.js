@@ -1,7 +1,8 @@
-import { getUser } from "@/app/_lib/data-service";
+import { getFilteredArticles, getUser } from "@/app/_lib/data-service";
 import { format } from "date-fns";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
+import Link from "next/link";
 import {
   FaEnvelope,
   FaPhone,
@@ -14,7 +15,13 @@ import {
 async function page() {
   const session = await getServerSession();
   const { user } = await getUser(session?.user?.email);
+  const articles = await getFilteredArticles();
 
+  const userPost = articles.filter(
+    (article) => article.author?._id === user?._id
+  );
+
+ 
   const roleStyles = {
     admin: "bg-gradient-to-br from-purple-600 via-pink-500 to-red-500",
     reader: "bg-gradient-to-br from-blue-100 via-green-100 to-yellow-100",
@@ -99,7 +106,7 @@ async function page() {
                 Joined: {format(new Date(user.createdAt), "MMMM dd, yyyy")}
               </p>
               <p className="text-slate-300">
-                Total Posts: {user.articles.length}
+                Total Posts: {userPost?.length}
               </p>
               <p className="text-slate-300">Profession: {user.profession}</p>
               <p className="text-slate-300">Gender: {user.gender}</p>
@@ -142,10 +149,10 @@ async function page() {
               Recent Articles
             </h3>
             <div className="space-y-4 mt-4">
-              {user?.articles?.map((article, index) => (
+              {userPost?.map((article, index) => (
                 <div key={index} className="flex space-x-4">
                   <Image
-                    src={article.thumbnail}
+                    src={article.coverImage}
                     alt={article.title}
                     width={64}
                     height={64}
@@ -155,13 +162,13 @@ async function page() {
                     <h4 className="font-semibold text-gray-800">
                       {article.title}
                     </h4>
-                    <p className="text-sm text-gray-500">{article.date}</p>
-                    <a
-                      href={article.link}
+                    <p className="text-sm text-gray-700">{format(new Date(article.publishedAt), "MMMM dd, yyyy")}</p>
+                    <Link
+                      href={`news/${article.slug}`}
                       className="text-blue-600 hover:underline"
                     >
                       Read More
-                    </a>
+                    </Link>
                   </div>
                 </div>
               ))}

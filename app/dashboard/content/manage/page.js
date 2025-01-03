@@ -112,10 +112,10 @@ async function page() {
                     </td>
                     <td className="px-6 py-4">
                       <Link
-                        href={`/author/${post.author.name}`}
+                        href={`/author/${post?.author?.name}`}
                         className="text-gray-300 hover:underline"
                       >
-                        {post.author.name}
+                        {post?.author?.name}
                       </Link>
                     </td>
                     <td className="px-6 py-4 text-gray-300">{post.category}</td>
