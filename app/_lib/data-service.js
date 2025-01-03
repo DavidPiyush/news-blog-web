@@ -11,12 +11,6 @@ export async function getAllUser() {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch user: ${response.status} ${response.statusText}`
-      );
-    }
-
     const user = await response.json();
 
     return user;
@@ -35,12 +29,6 @@ export async function getUserById(id) {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch user: ${response.status} ${response.statusText}`
-      );
-    }
-
     const user = await response.json();
 
     return user;
@@ -57,12 +45,6 @@ export async function getUser(email) {
         "Content-Type": "application/json",
       },
     });
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch user: ${response.status} ${response.statusText}`
-      );
-    }
 
     const user = await response.json();
 
@@ -83,12 +65,6 @@ export async function createUser(data) {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to create user: ${response.status} ${response.statusText}`
-      );
-    }
-
     const user = await response.json();
     return user;
   } catch (error) {
@@ -107,12 +83,6 @@ export async function updateUser(id, data) {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to update user: ${response.status} ${response.statusText}`
-      );
-    }
-
     const updatedUser = await response.json();
     return updatedUser;
   } catch (error) {
@@ -126,12 +96,6 @@ export async function deleteUser(id) {
     const response = await fetch(`${baseUrl}/api/users/${id}/delete`, {
       method: "DELETE",
     });
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to delete user: ${response.status} ${response.statusText}`
-      );
-    }
 
     return { message: "User deleted successfully" };
   } catch (error) {
@@ -151,9 +115,7 @@ export async function getAllArticle(filter) {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch user: ${response.status} ${response.statusText}`
-      );
+      throw new Error(`Failed to fetch articles: ${response.statusText}`);
     }
 
     const articles = await response.json();
@@ -175,9 +137,7 @@ export async function getFilteredArticles(filter) {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch articles: ${response.status} ${response.statusText}`
-      );
+      throw new Error(`Failed to fetch articles: ${response.statusText}`);
     }
 
     const { articles } = await response.json();
@@ -204,12 +164,6 @@ export async function getArticlesBasedOnSlug(slug) {
         "Content-Type": "application/json",
       },
     });
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch article: ${response.status} ${response.statusText}`
-      );
-    }
 
     return response.json();
   } catch (error) {
@@ -241,8 +195,6 @@ export async function CreateArticle(data) {
   }
 }
 
-
-
 export async function UpdateArticle(articleId, data) {
   try {
     const response = await fetch(
@@ -269,7 +221,6 @@ export async function UpdateArticle(articleId, data) {
   }
 }
 
-
 export async function deleteArticle(id) {
   try {
     const response = await fetch(`${baseUrl}/api/articles/${id}/delete`, {
@@ -288,7 +239,6 @@ export async function deleteArticle(id) {
     throw error;
   }
 }
-
 
 // fetch all categories
 
@@ -339,16 +289,13 @@ export async function CreateCategory(data) {
 
 export async function UpdateCategory(catId, data) {
   try {
-    const response = await fetch(
-      `${baseUrl}/api/category/${catId}/update`,
-      {
-        method: "PATCH", // You can also use PATCH if partial updates are allowed
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    const response = await fetch(`${baseUrl}/api/category/${catId}/update`, {
+      method: "PATCH", // You can also use PATCH if partial updates are allowed
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -381,3 +328,27 @@ export async function deleteCategory(id) {
     throw error;
   }
 }
+
+const fetchAllComments = async () => {
+  const response = await fetch(`${baseUrl}/api/comments`);
+  const data = await response.json();
+  return data;
+};
+
+const fetchComments = async (articleId) => {
+  const response = await fetch(`${baseUrl}/api/comments/${articleId}`);
+  const data = await response.json();
+  return data;
+};
+
+const postComment = async (articleId, author, content) => {
+  const response = await fetch("/api/comments/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ articleId, author, content }),
+  });
+  const data = await response.json();
+  return data;
+};

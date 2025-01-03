@@ -8,9 +8,19 @@ import {
   FaPhone,
   FaMapMarkerAlt,
   FaCheckCircle,
-  FaChevronUp,
-  FaChevronDown,
 } from "react-icons/fa";
+
+export const metadata = {
+  title: "Profile",
+};
+
+export async function generateStaticParams() {
+  const articles = await getFilteredArticles();
+
+  const ids = articles.map((article) => ({ id: article._id }));
+
+  return ids;
+}
 
 async function page() {
   const session = await getServerSession();
@@ -21,7 +31,6 @@ async function page() {
     (article) => article.author?._id === user?._id
   );
 
- 
   const roleStyles = {
     admin: "bg-gradient-to-br from-purple-600 via-pink-500 to-red-500",
     reader: "bg-gradient-to-br from-blue-100 via-green-100 to-yellow-100",
@@ -105,9 +114,7 @@ async function page() {
               <p className="text-slate-300">
                 Joined: {format(new Date(user.createdAt), "MMMM dd, yyyy")}
               </p>
-              <p className="text-slate-300">
-                Total Posts: {userPost?.length}
-              </p>
+              <p className="text-slate-300">Total Posts: {userPost?.length}</p>
               <p className="text-slate-300">Profession: {user.profession}</p>
               <p className="text-slate-300">Gender: {user.gender}</p>
             </div>
@@ -162,7 +169,9 @@ async function page() {
                     <h4 className="font-semibold text-gray-800">
                       {article.title}
                     </h4>
-                    <p className="text-sm text-gray-700">{format(new Date(article.publishedAt), "MMMM dd, yyyy")}</p>
+                    <p className="text-sm text-gray-700">
+                      {format(new Date(article.publishedAt), "MMMM dd, yyyy")}
+                    </p>
                     <Link
                       href={`news/${article.slug}`}
                       className="text-blue-600 hover:underline"

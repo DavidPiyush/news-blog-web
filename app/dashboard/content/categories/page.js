@@ -5,6 +5,20 @@ import {
   categoryEdit,
 } from "@/app/_lib/actions";
 import { getAllCategory } from "@/app/_lib/data-service";
+export const dynamic = 'force-dynamic'; // Mark the page as dynamic
+
+
+export const metadata = {
+  title: "Category Management",
+};
+
+export async function generateStaticParams() {
+  const { categories } = await getAllCategory();
+
+  const ids = categories.map((cat) => ({ id: cat._id }));
+
+  return ids;
+}
 
 async function Page() {
   const { categories } = await getAllCategory();
@@ -39,7 +53,6 @@ async function Page() {
             name="description"
             className="border border-gray-300 p-2 rounded-lg w-64 text-gray-800 flex-1"
             placeholder="Enter category description"
-           
           />
           <button
             type="submit"

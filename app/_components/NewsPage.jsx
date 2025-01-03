@@ -17,7 +17,8 @@ import TopPick from "./TopPick";
 import SocailLinkBox from "./SocailLinkBox";
 import NewsLetter from "./NewsLetter";
 import AdsVerticalBig from "./AdsVertical";
-function NewsPage({ article, user, articles }) {
+import DangerousSetHtml from "./DangerousSetHtml";
+function NewsPage({ article = [], user = [], articles = [] }) {
   return (
     <section className="mt-12 max-w-7xl mx-auto ">
       <div className="grid grid-cols-1 md:grid-cols-8 gap-10">
@@ -25,7 +26,7 @@ function NewsPage({ article, user, articles }) {
           {/* Category and Title */}
           <div className="flex items-center gap-4">
             <span className="bg-blue-400 px-4 py-2 text-white rounded-lg text-sm font-bold uppercase tracking-tight">
-              {article?.tags[0] || "Technology"}
+              {article?.tags?.at(0) || "Technology"}
             </span>
           </div>
           <h1 className="mt-4 text-4xl font-semibold text-[#161616">
@@ -93,7 +94,7 @@ function NewsPage({ article, user, articles }) {
             <StayInTouch
               icon={FaFacebookF}
               socialMediaName="Facebook"
-              href={user.socialLinks.facebook}
+              href={user?.socialLinks?.facebook}
               color="#fff"
               textColor="text-white"
               backgroundColor="bg-blue-700"
@@ -103,7 +104,7 @@ function NewsPage({ article, user, articles }) {
             {/* Twitter */}
             <StayInTouch
               icon={FaTwitter}
-              href={user.socialLinks.twitter}
+              href={user?.socialLinks?.twitter}
               socialMediaName="Twitter"
               color="#fff"
               textColor="text-white"
@@ -115,7 +116,7 @@ function NewsPage({ article, user, articles }) {
             <StayInTouch
               icon={FaPinterest}
               socialMediaName="Pinterest"
-              href={user.socialLinks.pinterest}
+              href={user?.socialLinks?.pinterest}
               color="#fff"
               textColor="text-white"
               backgroundColor="bg-red-600"
@@ -126,7 +127,7 @@ function NewsPage({ article, user, articles }) {
             <StayInTouch
               icon={FaTelegramPlane}
               socialMediaName="Telegram"
-              href={user.socialLinks.telegram}
+              href={user?.socialLinks?.telegram}
               color="#fff"
               textColor="text-white"
               backgroundColor="bg-blue-500"
@@ -151,16 +152,16 @@ function NewsPage({ article, user, articles }) {
               className="w-full h-[500px] object-cover rounded-lg shadow-lg"
             />
             <article className="mt-6 text-[#333] space-y-4 leading-8">
-              <div dangerouslySetInnerHTML={{ __html: article.content }} />
+              <DangerousSetHtml content={article.content} />
               {/* </p> */}
 
               <AdsHorizontalBig />
             </article>
             <AuthorInfo
-              socialMedia={user.socialLinks}
-              authorName={user.name}
-              authorAvatar={user.profilePicture}
-              authorBio={user.bio}
+              socialMedia={user?.socialLinks}
+              authorName={user?.name}
+              authorAvatar={user?.profilePicture}
+              authorBio={user?.bio}
             />
             <RelatedPosts articles={articles} />
             <CommentForm />
@@ -194,7 +195,7 @@ function NewsPage({ article, user, articles }) {
             <h5 className="bg-gray-900 text-white text-xl font-semibold px-4 py-2 rounded-md">
               Stay In Touch
             </h5>
-            <SocailLinkBox socialMedia={user.socialLinks} />
+            <SocailLinkBox socialMedia={user?.socialLinks} />
           </div>
 
           <NewsLetter />

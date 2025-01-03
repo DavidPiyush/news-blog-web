@@ -1,15 +1,20 @@
 import { FaNewspaper, FaTag, FaUsers } from "react-icons/fa6";
-import { getAllArticle, getAllCategory, getFilteredArticles, getUser } from "../_lib/data-service";
-import Image from "next/image";
-import Link from "next/link";
-import { format } from "date-fns";
-import Pagination from "../_components/Pagination";
+import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
 import PostList from "../_components/PostList";
+
+export const dynamic = 'force-dynamic'; // Mark the page as dynamic
 
 export const metadata = {
   title: "Dashboard",
 };
 
+
+export async function generateStaticParams() {
+  const articles = await getFilteredArticles();
+  const ids = articles.map((article) => ({ id: article._id }));
+
+  return ids;
+}
 // export const revalidate = 3600;
 async function Page() {
 

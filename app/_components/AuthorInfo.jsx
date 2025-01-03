@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import Image from "next/image";
 
-function AuthorInfo({ socialMedia, authorName, authorAvatar, authorBio }) {
+function AuthorInfo({ socialMedia=[], authorName='', authorAvatar='', authorBio='' }) {
   return (
     <div className=" mt-16 mb-10 w-full">
       {/* Share Section */}

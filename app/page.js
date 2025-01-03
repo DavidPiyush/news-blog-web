@@ -16,11 +16,19 @@ import AdsHorizontalBig from "./_components/AdsHorizontalBig";
 import TechnologyNews from "./_components/TechnologyNews";
 import Footer from "./_components/Footer";
 
-export default async function Home() {
-  //  const { url } = params;
+export const metadata = {
+  title: "News App",
+};
 
-  // const { article } = await getArticlesBasedOnSlug(url);
-  // const { user } = await getUserById(article.author);
+export async function generateStaticParams() {
+  const articles = await getFilteredArticles();
+
+  const ids = articles.map((article) => ({ articleId: String(article._id) }));
+
+  return ids;
+}
+
+export default async function Home() {
   const articles = await getFilteredArticles();
   const { categories } = await getAllCategory();
 

@@ -3,6 +3,8 @@ import { deleteUserByAdmin, updateRoleByAdmin } from "@/app/_lib/actions";
 import { getAllCategory, getAllUser } from "@/app/_lib/data-service";
 import Image from "next/image";
 import { FaUserEdit, FaTrashAlt } from "react-icons/fa";
+export const dynamic = 'force-dynamic'; // Mark the page as dynamic
+
 
 export const metadata = {
   title: "User Management",

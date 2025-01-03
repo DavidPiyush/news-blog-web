@@ -12,10 +12,20 @@ import {
   FaRegEyeSlash,
   FaTrashAlt,
 } from "react-icons/fa";
+export const dynamic = 'force-dynamic'; // Mark the page as dynamic
+
 
 export const metadata = {
   title: "Manage Content",
 };
+
+export async function generateStaticParams() {
+  const { articles } = await getAllArticle();
+
+  const ids = articles.map((article) => ({ id: article._id }));
+
+  return ids;
+}
 
 async function page() {
   const { articles } = await getAllArticle();
