@@ -1,9 +1,10 @@
 const baseUrl =
   process.env.NEXTAUTH_URL ||
-  "https://news-blog-rmtrwua5d-davidpiyushs-projects.vercel.app";
+  (process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://news-blog-rmtrwua5d-davidpiyushs-projects.vercel.app");
 
-// Get user from database
-
+// Get all users from the database
 export async function getAllUser() {
   try {
     const response = await fetch(`${baseUrl}/api/users`, {
@@ -22,6 +23,7 @@ export async function getAllUser() {
   }
 }
 
+// Get user by ID
 export async function getUserById(id) {
   try {
     const response = await fetch(`${baseUrl}/api/users/${id}`, {
@@ -39,6 +41,8 @@ export async function getUserById(id) {
     throw error;
   }
 }
+
+// Get user by email
 export async function getUser(email) {
   try {
     const response = await fetch(`${baseUrl}/api/users/user/${email}`, {
@@ -57,9 +61,10 @@ export async function getUser(email) {
   }
 }
 
+// Create a new user
 export async function createUser(data) {
   try {
-    const response = await fetch("/api/users/create", {
+    const response = await fetch(`${baseUrl}/api/users/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -75,6 +80,7 @@ export async function createUser(data) {
   }
 }
 
+// Update an existing user
 export async function updateUser(id, data) {
   try {
     const response = await fetch(`${baseUrl}/api/users/${id}/update`, {
@@ -93,6 +99,7 @@ export async function updateUser(id, data) {
   }
 }
 
+// Delete a user
 export async function deleteUser(id) {
   try {
     const response = await fetch(`${baseUrl}/api/users/${id}/delete`, {
@@ -106,7 +113,7 @@ export async function deleteUser(id) {
   }
 }
 
-// fetch all articles from database
+// Fetch all articles from the database
 export async function getAllArticle() {
   try {
     const response = await fetch(`${baseUrl}/api/articles`, {
@@ -124,11 +131,12 @@ export async function getAllArticle() {
 
     return articles;
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error("Error fetching articles:", error);
     throw error;
   }
 }
 
+// Fetch articles based on filters
 export async function getFilteredArticles(filter) {
   try {
     const response = await fetch(`${baseUrl}/api/articles?${filter}`, {
@@ -147,8 +155,6 @@ export async function getFilteredArticles(filter) {
     // Filter articles based on the specified conditions
     const filteredArticles = articles.filter(
       (article) => article.status === "published"
-      //&& article.isApproved === true
-      // article.isDeleted === false
     );
 
     return filteredArticles;
@@ -158,6 +164,7 @@ export async function getFilteredArticles(filter) {
   }
 }
 
+// Fetch articles based on slug
 export async function getArticlesBasedOnSlug(slug) {
   const response = await fetch(`${baseUrl}/api/articles/${slug}`, {
     method: "GET",
@@ -173,6 +180,7 @@ export async function getArticlesBasedOnSlug(slug) {
   return await response.json();
 }
 
+// Create a new article
 export async function CreateArticle(data) {
   try {
     const response = await fetch(`${baseUrl}/api/articles/create`, {
@@ -196,12 +204,13 @@ export async function CreateArticle(data) {
   }
 }
 
+// Update an article
 export async function UpdateArticle(articleId, data) {
   try {
     const response = await fetch(
       `${baseUrl}/api/articles/${articleId}/update`,
       {
-        method: "PATCH", // You can also use PATCH if partial updates are allowed
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -222,6 +231,7 @@ export async function UpdateArticle(articleId, data) {
   }
 }
 
+// Delete an article
 export async function deleteArticle(id) {
   try {
     const response = await fetch(`${baseUrl}/api/articles/${id}/delete`, {
@@ -241,8 +251,7 @@ export async function deleteArticle(id) {
   }
 }
 
-// fetch all categories
-
+// Fetch all categories
 export async function getAllCategory() {
   try {
     const response = await fetch(`${baseUrl}/api/category`, {
@@ -254,17 +263,18 @@ export async function getAllCategory() {
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch user: ${response.status} ${response.statusText}`
+        `Failed to fetch categories: ${response.status} ${response.statusText}`
       );
     }
 
     return response.json();
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error("Error fetching categories:", error);
     throw error;
   }
 }
 
+// Create a new category
 export async function CreateCategory(data) {
   try {
     const response = await fetch(`${baseUrl}/api/category/create`, {
@@ -288,10 +298,11 @@ export async function CreateCategory(data) {
   }
 }
 
+// Update a category
 export async function UpdateCategory(catId, data) {
   try {
     const response = await fetch(`${baseUrl}/api/category/${catId}/update`, {
-      method: "PATCH", // You can also use PATCH if partial updates are allowed
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
@@ -311,6 +322,7 @@ export async function UpdateCategory(catId, data) {
   }
 }
 
+// Delete a category
 export async function deleteCategory(id) {
   try {
     const response = await fetch(`${baseUrl}/api/category/${id}/delete`, {
@@ -323,25 +335,28 @@ export async function deleteCategory(id) {
       );
     }
 
-    return { message: "category deleted successfully" };
+    return { message: "Category deleted successfully" };
   } catch (error) {
     console.error("Error deleting category:", error);
     throw error;
   }
 }
 
+// Fetch all comments
 const fetchAllComments = async () => {
   const response = await fetch(`${baseUrl}/api/comments`);
   const data = await response.json();
   return data;
 };
 
+// Fetch comments by article ID
 const fetchComments = async (articleId) => {
   const response = await fetch(`${baseUrl}/api/comments/${articleId}`);
   const data = await response.json();
   return data;
 };
 
+// Post a new comment
 const postComment = async (articleId, author, content) => {
   const response = await fetch("/api/comments/create", {
     method: "POST",
