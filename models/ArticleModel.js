@@ -10,7 +10,7 @@ const articleSchema = new mongoose.Schema(
     },
     subTitle: {
       type: String,
-      required: [true, "A article must have a title subtitle"],
+      required: [true, "A article must have a subtitle"],
       trim: true,
       maxlength: 200,
     },
@@ -19,7 +19,6 @@ const articleSchema = new mongoose.Schema(
     content: {
       type: String,
       required: true, // Main content of the article
-      required: [true, "A article must have a title content"],
     },
     summary: {
       type: String,

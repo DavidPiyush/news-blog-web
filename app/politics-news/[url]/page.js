@@ -2,46 +2,76 @@ import Header from "@/app/_components/Header";
 import NewsPage from "@/app/_components/NewsPage";
 import Spinner from "@/app/_components/Spinner";
 import {
-  getAllArticle,
   getArticlesBasedOnSlug,
   getFilteredArticles,
   getUserById,
 } from "@/app/_lib/data-service";
+
 import NotFound from "@/app/not-found";
 import { Suspense } from "react";
 
+// Metadata generation
 export async function generateMetadata({ params }) {
-  const { article } = await getArticlesBasedOnSlug(params.url);
-  return { title: `Article ${article?.title}` };
+  try {
+    const { article } = await getArticlesBasedOnSlug(params.url);
+
+    if (!article) {
+      return { title: "Article Not Found" };
+    }
+
+    return { title: `Article ${article.title}` };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return { title: "Error" };
+  }
 }
 
+// Static params generation
 export async function generateStaticParams() {
-  const articles = await getFilteredArticles();
+  try {
+    const articles = await getFilteredArticles();
 
-  const ids = articles.map((article) => ({ articleId: String(article._id) }));
+    // Ensure articles is valid and contains data
+    if (!articles || articles.length === 0) {
+      console.warn("No articles found for static params generation.");
+      return [];
+    }
 
-  return ids;
+    // Return the expected format for static params
+    return articles.map((article) => ({ url: article.slug })); // Assuming `slug` is the correct property
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return []; // Return an empty array to prevent build failure
+  }
 }
 
+// Page rendering
 async function page({ params }) {
   const { url } = params;
 
-  const { article } = await getArticlesBasedOnSlug(url);
-  const { user } = await getUserById(article.author);
+  try {
+    const { article } = await getArticlesBasedOnSlug(url);
 
-  const articles = await getFilteredArticles();
+    if (!article) {
+      console.error("Article not found for URL:", url);
+      return <NotFound />;
+    }
 
-  return (
-    <div>
-      {article ? (
+    const { user } = await getUserById(article?.author);
+
+    const articles = await getFilteredArticles();
+
+    return (
+      <div>
         <Suspense fallback={<Spinner />}>
           <NewsPage article={article} user={user} articles={articles} />
         </Suspense>
-      ) : (
-        <NotFound />
-      )}
-    </div>
-  );
+      </div>
+    );
+  } catch (error) {
+    console.error("Error rendering page:", error);
+    return <NotFound />;
+  }
 }
 
 export default page;
