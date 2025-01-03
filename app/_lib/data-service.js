@@ -105,9 +105,9 @@ export async function deleteUser(id) {
 }
 
 // fetch all articles from database
-export async function getAllArticle(filter) {
+export async function getAllArticle() {
   try {
-    const response = await fetch(`${baseUrl}/api/articles?${filter}`, {
+    const response = await fetch(`${baseUrl}/api/articles`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -157,19 +157,18 @@ export async function getFilteredArticles(filter) {
 }
 
 export async function getArticlesBasedOnSlug(slug) {
-  try {
-    const response = await fetch(`${baseUrl}/api/articles/news/${slug}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  const response = await fetch(`${baseUrl}/api/articles/${slug}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-    return response.json();
-  } catch (error) {
-    console.error("Error fetching article:", error);
-    throw new Error("An error occurred while fetching the article.");
+  if (!response.ok) {
+    throw new Error("Failed to fetch article: " + response.statusText);
   }
+
+  return await response.json();
 }
 
 export async function CreateArticle(data) {

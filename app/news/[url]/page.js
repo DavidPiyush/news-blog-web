@@ -26,16 +26,11 @@ export async function generateMetadata({ params }) {
 }
 
 export async function generateStaticParams() {
-  try {
-    const articles = await getFilteredArticles();
-
-    // Ensure the returned params match the dynamic route name
-    return articles.map((article) => ({ url: article.slug })); // Assuming `slug` is the unique identifier
-  } catch (error) {
-    console.error("Error generating static params:", error);
-    return []; // Return an empty array to prevent build failure
-  }
+  const articles = await getFilteredArticles(); // Error occurs here
+  const ids = articles.map((article) => ({ articleId: String(article._id) }));
+  return ids;
 }
+
 
 async function page({ params }) {
   const { url } = params;
@@ -48,7 +43,7 @@ async function page({ params }) {
       return <NotFound />;
     }
 
-    const { user } = await getUserById(article.author);
+    const { user } = await getUserById(article?.author);
 
     const articles = await getFilteredArticles();
 
