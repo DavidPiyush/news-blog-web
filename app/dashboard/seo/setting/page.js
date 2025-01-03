@@ -122,7 +122,7 @@ const SEOSettingsPage = () => {
               <div className="relative">
                 <label
                   htmlFor="twitterTitle"
-                  className="block text-sm font-medium text-gray-700 flex items-center"
+                  className=" text-sm font-medium text-gray-700 flex items-center"
                   title="Set a custom title for Twitter sharing"
                 >
                   <FaTwitter className="text-blue-400 mr-2" /> Twitter Title
@@ -142,7 +142,7 @@ const SEOSettingsPage = () => {
               <div className="relative">
                 <label
                   htmlFor="facebookTitle"
-                  className="block text-sm font-medium text-gray-700 flex items-center"
+                  className=" text-sm font-medium text-gray-700 flex items-center"
                   title="Set a custom title for Facebook sharing"
                 >
                   <FaFacebook className="text-blue-600 mr-2" /> Facebook Title
@@ -162,7 +162,7 @@ const SEOSettingsPage = () => {
               <div className="relative">
                 <label
                   htmlFor="linkedinTitle"
-                  className="block text-sm font-medium text-gray-700 flex items-center"
+                  className=" text-sm font-medium text-gray-700 flex items-center"
                   title="Set a custom title for LinkedIn sharing"
                 >
                   <FaLinkedin className="text-blue-500 mr-2" /> LinkedIn Title

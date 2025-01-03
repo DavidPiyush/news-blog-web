@@ -1,10 +1,10 @@
 import Link from "next/link";
 import HeaderLevelFour from "./HeaderLevelFour";
 import Image from "next/image"; // Import Next.js Image component
-import { getAllArticle } from "../_lib/data-service";
+import { getAllArticle, getFilteredArticles } from "../_lib/data-service";
 
 async function DoNotMiss() {
-  const { articles } = await getAllArticle();
+  const articles = await getFilteredArticles();
 
   return (
     <>
@@ -14,7 +14,7 @@ async function DoNotMiss() {
       </h5>
 
       {/* News Items */}
-      {articles.slice(0, 5).map((post) => (
+      {articles?.slice(0, 5).map((post) => (
         <div
           key={post._id}
           className="grid grid-cols-2 gap-4 items-center justify-between mb-4"

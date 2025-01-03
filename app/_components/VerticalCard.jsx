@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 function VerticalCard({ title, subtile, views, read, date, image ,url}) {
-  console.log(title,subtile,views ," this from verticalCard")
   return (
     <div className=" border rounded-lg overflow-hidden shadow-sm bg-white hover:shadow-xl transition-shadow duration-300" >
       {/* Image */}

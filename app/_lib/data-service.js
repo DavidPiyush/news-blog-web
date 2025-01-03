@@ -1,8 +1,4 @@
-const baseUrl =
-  process.env.NEXTAUTH_URL ||
-  (process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
-    : "https://news-blog-rmtrwua5d-davidpiyushs-projects.vercel.app");
+const baseUrl = process.env.NEXTAUTH_URL;
 
 // Get all users from the database
 export async function getAllUser() {
@@ -122,10 +118,6 @@ export async function getAllArticle() {
         "Content-Type": "application/json",
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch articles: ${response.statusText}`);
-    }
 
     const articles = await response.json();
 
