@@ -34,6 +34,7 @@ export async function updateProfile(formData) {
 
     await updateUser(id, updateData);
 
+    revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/profile");
     revalidatePath("/dashboard/profile/setting");
@@ -107,6 +108,7 @@ export async function createPost(formData) {
   try {
     await CreateArticle(updateData);
 
+    revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/content");
     revalidatePath("/dashboard/content/article");
@@ -134,6 +136,7 @@ export async function postApproval(formData) {
       isApproved: approvalStatus,
     });
 
+    revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/setting");
     revalidatePath("/dashboard/setting/approval");
@@ -154,6 +157,7 @@ export async function postDelete(formData) {
     await deleteArticle(id);
 
     // Revalidate paths to update the UI
+    revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/content");
     revalidatePath("/dashboard/content/manage");
@@ -182,6 +186,7 @@ export async function postPublished(formData) {
     // Update the article
     await UpdateArticle(id, updateData);
 
+    revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/content");
     revalidatePath("/dashboard/content/manage");
@@ -210,6 +215,7 @@ export async function categoryCreate(formData) {
 
   await CreateCategory(categoryData);
 
+  revalidatePath("/");
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/content");
   revalidatePath("/dashboard/content/categories");
@@ -242,6 +248,7 @@ export async function categoryEdit(formData) {
     console.log(updatedData);
     await UpdateCategory(id, updatedData);
 
+    revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/content");
     revalidatePath("/dashboard/content/categories");
@@ -262,6 +269,7 @@ export async function categoryDelete(formData) {
     await deleteCategory(id);
 
     // Revalidate paths to update the UI
+    revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/content");
     revalidatePath("/dashboard/content/categories");
@@ -288,6 +296,7 @@ export async function updateRoleByAdmin(formData) {
   // Update the article
   await updateUser(id, updateData);
 
+  revalidatePath("/");
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/user");
 }
@@ -300,6 +309,7 @@ export async function deleteUserByAdmin(formData) {
 
   await deleteUser(id);
 
+  revalidatePath("/");
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/user");
 }
