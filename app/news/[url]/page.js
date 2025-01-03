@@ -11,40 +11,58 @@ import NotFound from "@/app/not-found";
 import { Suspense } from "react";
 
 export async function generateMetadata({ params }) {
-  const { article } = await getArticlesBasedOnSlug(params.url);
-  return { title: `Article ${article?.title}` };
+  try {
+    const { article } = await getArticlesBasedOnSlug(params.url);
+
+    if (!article) {
+      return { title: "Article Not Found" };
+    }
+
+    return { title: `Article ${article.title}` };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return { title: "Error" };
+  }
 }
 
 export async function generateStaticParams() {
-  const articles = await getFilteredArticles();
+  try {
+    const articles = await getFilteredArticles();
 
-  const ids = articles.map((article) => ({ articleId: String(article._id) }));
-
-  return ids;
+    // Ensure the returned params match the dynamic route name
+    return articles.map((article) => ({ url: article.slug })); // Assuming `slug` is the unique identifier
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return []; // Return an empty array to prevent build failure
+  }
 }
 
 async function page({ params }) {
   const { url } = params;
 
-  console.log(url);
-  const { article } = await getArticlesBasedOnSlug(url);
+  try {
+    const { article } = await getArticlesBasedOnSlug(url);
 
-  const { user } = await getUserById(article?.author);
+    if (!article) {
+      console.error("Article not found for URL:", url);
+      return <NotFound />;
+    }
 
-  console.log(article, "this aritlec");
-  const articles = await getFilteredArticles();
+    const { user } = await getUserById(article.author);
 
-  return (
-    <div>
-      {article ? (
+    const articles = await getFilteredArticles();
+
+    return (
+      <div>
         <Suspense fallback={<Spinner />}>
           <NewsPage article={article} user={user} articles={articles} />
         </Suspense>
-      ) : (
-        <NotFound />
-      )}
-    </div>
-  );
+      </div>
+    );
+  } catch (error) {
+    console.error("Error rendering page:", error);
+    return <NotFound />;
+  }
 }
 
 export default page;
