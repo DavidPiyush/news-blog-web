@@ -1,15 +1,18 @@
+// Apply middleware to protect the dashboard route
+
 import { NextResponse } from "next/server";
-import { getSession } from "next-auth/react";
+import { getToken } from "next-auth/jwt"; // Import getToken to check JWT
 
 export async function middleware(request) {
-  const session = await getSession({ req: request });
+  // Get the session token from the request
+  const token = await getToken({ req: request });
 
-  // If no session, redirect to the login page
-  if (!session) {
+  // If no token is found, redirect to login page
+  if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // If session exists, allow the request to proceed
+  // If token exists, allow the request to proceed
   return NextResponse.next();
 }
 
