@@ -23,6 +23,10 @@ export const metadata = {
 export async function generateStaticParams() {
   const articles = await getFilteredArticles();
 
+  if (articles.length === 0) {
+    return [];
+  }
+
   const ids = articles.map((article) => ({ articleId: String(article._id) }));
 
   return ids;

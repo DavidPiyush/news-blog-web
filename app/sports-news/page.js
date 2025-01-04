@@ -10,7 +10,15 @@ export const metadata = {
 
 export async function generateStaticParams() {
   const articles = await getFilteredArticles();
+
+
+  if (articles.length === 0) {
+    return [];
+  }
+
   const { categories } = await getAllCategory();
+
+
   const sportArticles = articles
     .filter((article) => {
       // Find the category object that matches the name "Tech"
