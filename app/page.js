@@ -32,11 +32,22 @@ export const metadata = {
 //   return ids;
 // }
 
+export const revalidate = 3600;
+
 export default async function Home() {
   const articles = await getFilteredArticles();
   const { categories } = await getAllCategory();
 
-  if (articles.length === 0) return;
+  console.log(articles);
+
+  if (articles.length === 0) {
+    return (
+      <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
+        <Header />
+        <SubNavigation />
+      </section>
+    );
+  }
   return (
     <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
       <Header />
