@@ -14,13 +14,13 @@ export const metadata = {
   title: "Profile",
 };
 
-export async function generateStaticParams() {
-  const articles = await getFilteredArticles();
+// export async function generateStaticParams() {
+//   const articles = await getFilteredArticles();
 
-  const ids = articles.map((article) => ({ id: article._id }));
+//   const ids = articles.map((article) => ({ id: article._id }));
 
-  return ids;
-}
+//   return ids;
+// }
 
 async function page() {
   const session = await getServerSession();

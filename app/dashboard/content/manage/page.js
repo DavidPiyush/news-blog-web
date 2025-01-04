@@ -19,13 +19,13 @@ export const metadata = {
   title: "Manage Content",
 };
 
-export async function generateStaticParams() {
-  const { articles } = await getAllArticle();
+// export async function generateStaticParams() {
+//   const { articles } = await getAllArticle();
 
-  const ids = articles.map((article) => ({ id: article._id }));
+//   const ids = articles.map((article) => ({ id: article._id }));
 
-  return ids;
-}
+//   return ids;
+// }
 
 async function page() {
   const { articles } = await getAllArticle();

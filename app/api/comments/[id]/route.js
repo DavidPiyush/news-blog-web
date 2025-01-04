@@ -9,9 +9,7 @@ export const GET = async (req, context) => {
     const { id } = context.params;
 
     // Find the comment by ID
-    const comment = await Comment.findById(id).populate(
-      "author post parentCommentId"
-    );
+    const comment = await Comment.findById(id)
 
     if (!comment) {
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });

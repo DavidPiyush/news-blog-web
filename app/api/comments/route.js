@@ -2,48 +2,30 @@ import { connectToDB } from "@/app/_lib/connectDB";
 import Comment from "@/models/CommentModel";
 import { NextResponse } from "next/server";
 
-export const GET = async (req) => {
+export const GET = async () => {
   try {
+    // Connect to the database
     await connectToDB();
 
-    const { searchParams } = new URL(req.url);
-    const approvedParam = searchParams.get("approved");
-    const isDeletedParam = searchParams.get("isDeleted");
-    const likesParam = searchParams.get("likes");
-
-    const approved = approvedParam ? approvedParam === "true" : undefined;
-    const isDeleted = isDeletedParam ? isDeletedParam === "true" : undefined;
-    const likes = likesParam ? parseInt(likesParam) : undefined;
-
-    let query = {};
-
-    if (approved !== undefined) {
-      query.approved = approved;
-    }
-
-    if (isDeleted !== undefined) {
-      query.isDeleted = isDeleted;
-    }
-
-    if (likes !== undefined) {
-      query.likes = { $gte: likes }; // Filter comments with likes greater than or equal to the provided value
-    }
-
-    const comments = await Comment.find(query).populate("author post");
-
-    if (comments.length === 0) {
+    // Fetch all comments and populate author and post fields
+    const comments = await Comment.find()
+    // If no comments are found, return a 404 response
+    if (!comments || comments.length === 0) {
       return NextResponse.json(
         { message: "No comments found" },
         { status: 404 }
       );
     }
 
+    // Return the comments with a success message
     return NextResponse.json(
       { message: "Comments retrieved successfully", comments },
       { status: 200 }
     );
   } catch (error) {
     console.error(error);
+
+    // Handle errors and return a 500 response
     return NextResponse.json(
       { error: "An error occurred while retrieving comments" },
       { status: 500 }

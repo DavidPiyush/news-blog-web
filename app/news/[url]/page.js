@@ -27,23 +27,23 @@ export async function generateMetadata({ params }) {
 }
 
 // Static Params generation for dynamic routes (called during build time)
-export async function generateStaticParams() {
-  try {
-    const articles = await getFilteredArticles();
+// export async function generateStaticParams() {
+//   try {
+//     const articles = await getFilteredArticles();
 
-    // Ensure `articles` is valid and contains data
-    if (!articles || articles.length === 0) {
-      console.warn("No articles found for static params generation.");
-      return [];
-    }
+//     // Ensure `articles` is valid and contains data
+//     if (!articles || articles.length === 0) {
+//       console.warn("No articles found for static params generation.");
+//       return [];
+//     }
 
-    // Return the expected format for static params
-    return articles.map((article) => ({ url: article.slug })); // Assuming `slug` is the correct property
-  } catch (error) {
-    console.error("Error generating static params:", error);
-    return []; // Return an empty array to prevent build failure
-  }
-}
+//     // Return the expected format for static params
+//     return articles.map((article) => ({ url: article.slug })); // Assuming `slug` is the correct property
+//   } catch (error) {
+//     console.error("Error generating static params:", error);
+//     return []; // Return an empty array to prevent build failure
+//   }
+// }
 
 // Page rendering (fetches article, user, and related articles)
 async function page({ params }) {

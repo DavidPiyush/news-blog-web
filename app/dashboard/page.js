@@ -9,12 +9,12 @@ export const metadata = {
 };
 
 
-export async function generateStaticParams() {
-  const articles = await getFilteredArticles();
-  const ids = articles.map((article) => ({ id: article._id }));
+// export async function generateStaticParams() {
+//   const articles = await getFilteredArticles();
+//   const ids = articles.map((article) => ({ id: article._id }));
 
-  return ids;
-}
+//   return ids;
+// }
 // export const revalidate = 3600;
 async function Page() {
 

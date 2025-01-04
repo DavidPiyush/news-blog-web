@@ -20,17 +20,17 @@ export const metadata = {
   title: "News App",
 };
 
-export async function generateStaticParams() {
-  const articles = await getFilteredArticles();
+// export async function generateStaticParams() {
+//   const articles = await getFilteredArticles();
 
-  if (articles.length === 0) {
-    return [];
-  }
+//   if (articles.length === 0) {
+//     return [];
+//   }
 
-  const ids = articles.map((article) => ({ articleId: String(article._id) }));
+//   const ids = articles.map((article) => ({ articleId: String(article._id) }));
 
-  return ids;
-}
+//   return ids;
+// }
 
 export default async function Home() {
   const articles = await getFilteredArticles();
