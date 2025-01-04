@@ -46,12 +46,19 @@ export const metadata = {
 
 async function Page() {
   const articles = await getFilteredArticles();
+
+  if (articles.length === 0) {
+    return (
+      <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative"></section>
+    );
+  }
+
   const { categories } = await getAllCategory();
   const worldArticles = articles
     ?.filter((article) => {
       // Find the category object that matches the name "Tech"
       const techCategory = categories.find(
-        (category) => category.slug === "world-news"
+        (category) => category?.slug === "world-news"
       );
 
       // Check if the article's category matches the found category's _id

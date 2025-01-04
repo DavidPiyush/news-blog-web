@@ -63,6 +63,10 @@ async function page({ params }) {
 
     // Fetch related articles (filtered articles)
     const articles = await getFilteredArticles();
+    if (!articles) {
+      console.error("Article not found for URL:", url);
+      return <NotFound />;
+    }
 
     return (
       <div>

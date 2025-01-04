@@ -11,13 +11,11 @@ export const metadata = {
 // export async function generateStaticParams() {
 //   const articles = await getFilteredArticles();
 
-
 //   if (articles.length === 0) {
 //     return [];
 //   }
 
 //   const { categories } = await getAllCategory();
-
 
 //   const sportArticles = articles
 //     .filter((article) => {
@@ -50,11 +48,20 @@ export const metadata = {
 async function Page() {
   const articles = await getFilteredArticles();
   const { categories } = await getAllCategory();
+
+  if (articles.length === 0) {
+    return (
+      <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
+        <NotFound />
+      </section>
+    );
+  }
+
   const sportArticles = articles
     .filter((article) => {
       // Find the category object that matches the name "Tech"
       const techCategory = categories.find(
-        (category) => category.slug === "sports-news"
+        (category) => category?.slug === "sports-news"
       );
 
       // Check if the article's category matches the found category's _id

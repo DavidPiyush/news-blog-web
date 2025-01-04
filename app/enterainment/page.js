@@ -46,11 +46,20 @@ export const metadata = {
 
 async function Page() {
   const articles = await getFilteredArticles();
+
+  if (articles.length === 0) {
+    return (
+      <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
+        <NotFound />
+      </section>
+    );
+  }
+
   const { categories } = await getAllCategory();
   const enterainment = articles
     .filter((article) => {
       // Find the category object that matches the name "Tech"
-      const techCategory = categories.find(
+      const techCategory = categories?.find(
         (category) => category.slug === "enterainment"
       );
 
