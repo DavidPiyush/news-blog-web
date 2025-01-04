@@ -36,6 +36,7 @@ export default async function Home() {
   const articles = await getFilteredArticles();
   const { categories } = await getAllCategory();
 
+  if (articles.length === 0) return;
   return (
     <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
       <Header />

@@ -11,20 +11,20 @@ import NotFound from "@/app/not-found";
 import { Suspense } from "react";
 
 // Metadata generation (called during build time)
-export async function generateMetadata({ params }) {
-  try {
-    const { article } = await getArticlesBasedOnSlug(params.url);
+// export async function generateMetadata({ params }) {
+//   try {
+//     const { article } = await getArticlesBasedOnSlug(params.url);
 
-    if (!article) {
-      return { title: "Article Not Found" };
-    }
+//     if (!article) {
+//       return { title: "Article Not Found" };
+//     }
 
-    return { title: `Article: ${article.title}` };
-  } catch (error) {
-    console.error("Error generating metadata:", error);
-    return { title: "Error" };
-  }
-}
+//     return { title: `Article: ${article.title}` };
+//   } catch (error) {
+//     console.error("Error generating metadata:", error);
+//     return { title: "Error" };
+//   }
+// }
 
 // Static Params generation for dynamic routes (called during build time)
 // export async function generateStaticParams() {
