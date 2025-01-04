@@ -8,6 +8,10 @@ import {
 } from "@/app/_lib/data-service";
 import NotFound from "@/app/not-found";
 import { Suspense } from "react";
+export const dynamic = 'force-dynamic'; // Mark the page as dynamic
+
+export const revalidate = 3600;  // Cache expires after 1 hour
+
 
 // Metadata generation
 export async function generateMetadata({ params }) {

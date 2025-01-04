@@ -10,6 +10,7 @@ import WorldPolitics from "./_components/WorldPolitics";
 import AdsHorizontalBig from "./_components/AdsHorizontalBig";
 import TechnologyNews from "./_components/TechnologyNews";
 import Footer from "./_components/Footer";
+export const dynamic = 'force-dynamic'; // Mark the page as dynamic
 
 export const metadata = {
   title: "News App",

@@ -3,6 +3,10 @@ import ArticleMainPage from "../_components/ArticleMainPage";
 import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
 import Spinner from "../_components/Spinner";
 import NotFound from "../not-found";
+export const dynamic = 'force-dynamic'; // Mark the page as dynamic
+
+export const revalidate = 3600;  // Cache expires after 1 hour
+
 
 export const metadata = {
   title: "World News",
