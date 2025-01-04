@@ -1,5 +1,6 @@
 import ArticleMainPage from "../_components/ArticleMainPage";
 import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
+export const dynamic = 'force-dynamic'; // Mark the page as dynamic
 
 // export async function generateStaticParams() {
 //   try {
