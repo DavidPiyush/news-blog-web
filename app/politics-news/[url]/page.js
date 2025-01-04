@@ -6,7 +6,6 @@ import {
   getFilteredArticles,
   getUserById,
 } from "@/app/_lib/data-service";
-
 import NotFound from "@/app/not-found";
 import { Suspense } from "react";
 
@@ -19,37 +18,19 @@ export async function generateMetadata({ params }) {
       return { title: "Article Not Found" };
     }
 
-    return { title: `Article ${article.title}` };
+    return { title: `Article: ${article.title}` };
   } catch (error) {
     console.error("Error generating metadata:", error);
     return { title: "Error" };
   }
 }
 
-// Static params generation
-// export async function generateStaticParams() {
-//   try {
-//     const articles = await getFilteredArticles();
-
-//     // Ensure articles is valid and contains data
-//     if (!articles || articles.length === 0) {
-//       console.warn("No articles found for static params generation.");
-//       return [];
-//     }
-
-//     // Return the expected format for static params
-//     return articles.map((article) => ({ url: article.slug })); // Assuming `slug` is the correct property
-//   } catch (error) {
-//     console.error("Error generating static params:", error);
-//     return []; // Return an empty array to prevent build failure
-//   }
-// }
-
 // Page rendering
 async function page({ params }) {
   const { url } = params;
 
   try {
+    // Fetch the article based on the URL slug
     const { article } = await getArticlesBasedOnSlug(url);
 
     if (!article) {
@@ -57,8 +38,10 @@ async function page({ params }) {
       return <NotFound />;
     }
 
-    const { user } = await getUserById(article?.author);
+    // Fetch the user who authored the article
+    const { user } = await getUserById(article.author);
 
+    // Fetch all filtered articles for the sidebar or other purposes
     const articles = await getFilteredArticles();
 
     return (

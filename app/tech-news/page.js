@@ -5,80 +5,58 @@ import Spinner from "../_components/Spinner";
 import NotFound from "../not-found";
 
 export const metadata = {
-  title: "tech news",
+  title: "Tech News",
 };
 
-// export async function generateStaticParams() {
-//   const articles = await getFilteredArticles();
-
-//   if (articles.length === 0) {
-//     return [];
-//   }
-
-//   const { categories } = await getAllCategory();
-//   const sportArticles = articles
-//     .filter((article) => {
-//       // Find the category object that matches the name "Tech"
-//       const techCategory = categories.find(
-//         (category) => category.slug === "tech-news"
-//       );
-
-//       // Check if the article's category matches the found category's _id
-//       return techCategory && article.categories === techCategory._id;
-//     })
-//     .map((article) => {
-//       // Find the matching category again to append the name
-//       const matchedCategory = categories.find(
-//         (category) => category._id === article.categories
-//       );
-
-//       // Return a new object with the category name appended
-//       return {
-//         ...article,
-//         categoryName: matchedCategory ? matchedCategory.name : "Unknown",
-//       };
-//     });
-
-//   const ids = sportArticles.map((article) => ({ id: article._id }));
-
-//   return ids;
-// }
-
 async function Page() {
-  const articles = await getFilteredArticles();
-  const { categories } = await getAllCategory();
-  const techArticles = articles
-    .filter((article) => {
-      // Find the category object that matches the name "Tech"
-      const techCategory = categories.find(
-        (category) => category.slug === "tech-news"
-      );
+  try {
+    // Fetch articles and categories
+    const articles = await getFilteredArticles();
+    const { categories } = await getAllCategory();
 
-      // Check if the article's category matches the found category's _id
-      return techCategory && article.categories === techCategory._id;
-    })
-    .map((article) => {
-      // Find the matching category again to append the name
-      const matchedCategory = categories.find(
-        (category) => category._id === article.categories
-      );
+    // Filter articles for the "Tech News" category
+    const techArticles = articles
+      .filter((article) => {
+        const techCategory = categories.find(
+          (category) => category.slug === "tech-news"
+        );
+        return techCategory && article.categories === techCategory._id;
+      })
+      .map((article) => {
+        const matchedCategory = categories.find(
+          (category) => category._id === article.categories
+        );
+        return {
+          ...article,
+          categoryName: matchedCategory ? matchedCategory.name : "Unknown",
+        };
+      });
 
-      // Return a new object with the category name appended
-      return {
-        ...article,
-        categoryName: matchedCategory ? matchedCategory.name : "Unknown",
-      };
-    });
-  return (
-    <div>
-      {articles ? (
+    // If no tech articles are found, show NotFound
+    if (techArticles.length === 0) {
+      return (
+        <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
+          <NotFound />
+        </section>
+      );
+    }
+
+    // Render Tech Articles
+    return (
+      <div>
         <Suspense fallback={<Spinner />}>
           <ArticleMainPage articles={techArticles} />
         </Suspense>
-      ) : (
+      </div>
+    );
+  } catch (error) {
+    console.error("Error loading Tech News Page:", error);
+    return (
+      <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
         <NotFound />
-      )}
-    </div>
-  );
+      </section>
+    );
+  }
 }
+
 export default Page;

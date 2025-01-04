@@ -8,77 +8,53 @@ export const metadata = {
   title: "World News",
 };
 
-// export async function generateStaticParams() {
-//   const articles = await getFilteredArticles();
-
-//   if (articles.length === 0) {
-//     return [];
-//   }
-
-//   const { categories } = await getAllCategory();
-//   const sportArticles = articles
-//     .filter((article) => {
-//       // Find the category object that matches the name "Tech"
-//       const techCategory = categories.find(
-//         (category) => category.slug === "world-news"
-//       );
-
-//       // Check if the article's category matches the found category's _id
-//       return techCategory && article.categories === techCategory._id;
-//     })
-//     .map((article) => {
-//       // Find the matching category again to append the name
-//       const matchedCategory = categories.find(
-//         (category) => category._id === article.categories
-//       );
-
-//       // Return a new object with the category name appended
-//       return {
-//         ...article,
-//         categoryName: matchedCategory ? matchedCategory.name : "Unknown",
-//       };
-//     });
-
-//   const ids = sportArticles.map((article) => ({ id: article._id }));
-
-//   return ids;
-// }
-
 async function Page() {
-  const articles = await getFilteredArticles();
+  let articles = [];
+  let categories = [];
 
-  if (articles.length === 0) {
+  try {
+    // Fetch data from the database
+    articles = await getFilteredArticles();
+    categories = await getAllCategory();
+  } catch (error) {
+    console.error("Error fetching data:", error);
     return (
-      <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative"></section>
+      <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
+        <p>Error fetching data. Please try again later.</p>
+      </section>
     );
   }
 
-  const { categories } = await getAllCategory();
+  // Handle case where no articles are found
+  if (!articles || articles.length === 0) {
+    return (
+      <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
+        <p>No articles found.</p>
+      </section>
+    );
+  }
+
+  // Filter and map world-news articles
   const worldArticles = articles
     ?.filter((article) => {
-      // Find the category object that matches the name "Tech"
-      const techCategory = categories.find(
+      const worldCategory = categories.find(
         (category) => category?.slug === "world-news"
       );
-
-      // Check if the article's category matches the found category's _id
-      return techCategory && article.categories === techCategory._id;
+      return worldCategory && article.categories === worldCategory._id;
     })
     .map((article) => {
-      // Find the matching category again to append the name
       const matchedCategory = categories.find(
         (category) => category._id === article.categories
       );
-
-      // Return a new object with the category name appended
       return {
         ...article,
         categoryName: matchedCategory ? matchedCategory.name : "Unknown",
       };
     });
+
   return (
     <div>
-      {articles ? (
+      {worldArticles && worldArticles.length > 0 ? (
         <Suspense fallback={<Spinner />}>
           <ArticleMainPage articles={worldArticles} />
         </Suspense>
@@ -88,4 +64,5 @@ async function Page() {
     </div>
   );
 }
+
 export default Page;
