@@ -12,14 +12,8 @@ export const POST = async (req) => {
     // Parse the request body
     const createNewArticle = await req.json();
 
-   
     // Validate the request body
-    if (
-      !createNewArticle ||
-      !createNewArticle.title ||
-      !createNewArticle.subTitle ||
-      !createNewArticle.content 
-    ) {
+    if (!createNewArticle || !createNewArticle.title) {
       return NextResponse.json(
         {
           error:
@@ -47,8 +41,6 @@ export const POST = async (req) => {
       isDeleted,
       isCommentAllowed,
     } = createNewArticle;
-
-  
 
     // Create a new article
     const newArticle = new Article({

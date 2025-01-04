@@ -2,8 +2,6 @@
 
 import DOMPurify from "dompurify";
 
-console.log(DOMPurify); // Check if DOMPurify is correctly imported
-
 function DangerousSetHtml({ content }) {
   const sanitizedContent =
     typeof window !== "undefined" ? DOMPurify.sanitize(content) : content;
@@ -17,3 +15,4 @@ function DangerousSetHtml({ content }) {
 }
 
 export default DangerousSetHtml;
+
