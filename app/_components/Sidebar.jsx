@@ -240,8 +240,7 @@ const sidebarData = {
   ],
 };
 
-
-function Sidebar({  role }) {
+function Sidebar({ role }) {
   const [openSections, setOpenSections] = useState({});
   const currentPath = usePathname();
 
@@ -258,26 +257,28 @@ function Sidebar({  role }) {
   );
 
   return (
-    <nav className="hidden md:block bg-slate-800 text-white p-4">
+    <nav className="hidden md:block bg-white text-gray-800 p-4 shadow-lg">
       <ul className="flex flex-col gap-2 fixed text-lg h-full">
         {filteredSections.map((section, idx) => (
           <li key={idx}>
             {section.link ? (
               <Link
                 href={section.link}
-                className={`flex items-center p-2 rounded-lg hover:bg-indigo-700 transition-colors duration-300 ${
-                  currentPath === section.link ? "bg-indigo-700" : ""
+                className={`flex items-center p-2 rounded-lg hover:bg-gray-200 transition-colors duration-300 ${
+                  currentPath === section.link
+                    ? "bg-gray-200 font-semibold"
+                    : ""
                 }`}
               >
-                <section.icon className="w-5 h-5 text-white" />
+                <section.icon className="w-5 h-5 text-gray-600" />
                 <span className="ms-3 text-sm">{section.title}</span>
               </Link>
             ) : (
               <div
                 onClick={() => toggleSection(section.title)}
-                className="flex items-center p-2 rounded-lg hover:bg-indigo-700 transition-colors duration-300 cursor-pointer"
+                className="flex items-center p-2 rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
               >
-                <section.icon className="w-5 h-5 text-white" />
+                <section.icon className="w-5 h-5 text-gray-600" />
                 <span className="ms-3 text-sm">{section.title}</span>
                 {section.subSections && (
                   <span
@@ -299,11 +300,13 @@ function Sidebar({  role }) {
                     <li key={subIdx}>
                       <Link
                         href={subSection.link}
-                        className={`flex items-center p-2 rounded-lg hover:bg-indigo-700 transition-colors duration-300 ${
-                          currentPath === subSection.link ? "bg-indigo-700" : ""
+                        className={`flex items-center p-2 rounded-lg hover:bg-gray-200 transition-colors duration-300 ${
+                          currentPath === subSection.link
+                            ? "bg-gray-200 font-semibold"
+                            : ""
                         }`}
                       >
-                        <subSection.icon className="w-5 h-5 text-white" />
+                        <subSection.icon className="w-5 h-5 text-gray-600" />
                         <span className="ms-3 text-sm">{subSection.title}</span>
                       </Link>
                     </li>

@@ -1,11 +1,14 @@
 "use client";
 import Image from "next/image";
-import { createPost } from "../_lib/actions";
 import QuillEditor from "./QuilEditor";
 import { CldUploadButton } from "next-cloudinary";
 import { FaEdit } from "react-icons/fa";
 import { useState } from "react";
 import SubmitButton from "./SubmitButton";
+import toast from "react-hot-toast"; // Import react-hot-toast for toast notifications
+import { createPost } from "../_lib/actions";
+
+
 
 function EditorContentPage({ userID, categories }) {
   const [coverImage, setCoverImage] = useState(null);
@@ -15,8 +18,8 @@ function EditorContentPage({ userID, categories }) {
   const [publishedAt, setPublishedAt] = useState(
     new Date().toISOString().split("T")[0]
   );
-
   const [publishTime, setPublishTime] = useState("12:00");
+
   const handleImageUpload = (result) => {
     const imageUrl = result?.info?.secure_url;
     setCoverImage(imageUrl);
@@ -31,15 +34,30 @@ function EditorContentPage({ userID, categories }) {
   };
 
   const inputClass =
-    "px-5 py-3 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-400 bg-gray-600 text-gray-300 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
+    "px-5 py-3 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-400 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   // Handle post submission logic here
+  //   const formData = new FormData(event.target);
+    
+  //   console.log(formData)
+  //   // Assuming createPost is an async function that handles the post submission
+  //   try {
+  //     // await createPost(postData);
+  //     toast.success("Article submitted successfully!"); // Show success toast
+  //   } catch (error) {
+  //     toast.error("Failed to submit the article. Please try again.");
+  //   }
+  // };
 
   return (
-    <div className="rounded-xl w-full max-w-5xl p-8">
-      <h1 className="text-4xl font-bold text-gray-300 mb-6 text-center">
+    <div className="rounded-xl w-full max-w-5xl p-8 bg-white text-gray-800  ">
+      <h1 className="text-4xl font-bold text-gray-800  mb-6 text-center">
         Create News Article
       </h1>
       <form className="space-y-6" action={createPost}>
-        {/* send the user id to populated user post */}
+        {/* Send the user id to populate user post */}
         <input
           type="text"
           className="hidden"
@@ -48,7 +66,7 @@ function EditorContentPage({ userID, categories }) {
         />
         {/* Title */}
         <div>
-          <label className="text-lg font-semibold text-gray-500">Title</label>
+          <label className="text-lg font-semibold text-gray-700">Title</label>
           <input
             type="text"
             className={inputClass}
@@ -119,7 +137,7 @@ function EditorContentPage({ userID, categories }) {
             className={inputClass}
             name="tags"
             placeholder="Enter comma-separated tags"
-            required
+          
           />
           <small className="text-gray-500 block mt-2">
             Separate tags with commas (e.g., News, Technology, Sports)
@@ -135,7 +153,7 @@ function EditorContentPage({ userID, categories }) {
             className={inputClass}
             name="relatedPosts"
             placeholder="Enter related post links"
-            required
+           
           />
         </div>
 
@@ -247,17 +265,6 @@ function EditorContentPage({ userID, categories }) {
           </div>
         )}
 
-        {/* Schedule Checkbox
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            className="h-5 w-5 text-blue-500"
-            name="publishedAt"
-          />
-          <label className="ml-2 text-lg font-semibold text-gray-700">
-            Schedule for Later
-          </label>
-        </div> */}
         {/* Status */}
         <div>
           <label className="text-lg font-semibold text-gray-700">Status</label>
@@ -273,44 +280,10 @@ function EditorContentPage({ userID, categories }) {
             </option>
           </select>
         </div>
-        {/* Comments Checkbox */}
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            value="true"
-            className="h-5 w-5 text-blue-500"
-            name="isCommentAllowed"
-          />
-          <label className="ml-2 text-lg font-semibold text-gray-700">
-            Allow Comments
-          </label>
-        </div>
+
         {/* Submit Button */}
-        <div className="flex justify-center">
-          {/* <button
-            type="submit"
-            className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:bg-blue-700 focus:outline-none"
-          >
-            Submit Article
-          </button> */}
-          <SubmitButton pendingLabel="Submitting...">
-            Submit Article
-          </SubmitButton>
-        </div>
+        <SubmitButton pendingLabel={"create new article..."} > Create a article </SubmitButton>
       </form>
-      {/* Article Preview */}
-      <div className="mt-6 p-4 bg-gray-100 rounded-xl shadow-lg">
-        <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-          Article Preview
-        </h3>
-        <div className="mt-4 text-gray-700">
-          {/* Render content as HTML */}
-          <div
-            className="ql-editor"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
-        </div>
-      </div>
     </div>
   );
 }

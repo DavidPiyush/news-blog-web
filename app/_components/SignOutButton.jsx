@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
+import toast from "react-hot-toast";
 
 function SignOutButton() {
   const handleSignOut = async (e) => {
@@ -8,10 +9,10 @@ function SignOutButton() {
 
     try {
       await signOut({ redirect: false });
-
-      window.location.href = "/login";
+      toast.success("Logout sucessfully!")
+      window.location.href = "/login"; 
     } catch (error) {
-      console.error("Error during sign-out:", error);
+      toast.error("Error during sign-out");
     }
   };
 
@@ -19,9 +20,9 @@ function SignOutButton() {
     <form onSubmit={handleSignOut}>
       <button
         type="submit"
-        className="px-4 py-2 text-sm text-white cursor-pointer hover:bg-slate-600 block"
+        className="px-4 py-2 text-sm text-gray-800 bg-gray-200 rounded-md cursor-pointer hover:bg-gray-300 transition-colors"
       >
-        <span>Sign out</span>
+        Sign out
       </button>
     </form>
   );

@@ -18,39 +18,40 @@ async function DashboardHeader() {
   const { user } = await getUser(session?.user?.email);
 
   return (
-    <div className="bg-slate-800 h-16 flex items-center justify-between px-6 text-white z-50 sticky top-0 ">
+    <div className="h-16 flex items-center justify-between px-6 bg-white text-gray-800 shadow-md z-50 sticky top-0">
+      {/* Left Section */}
       <div className="flex items-center space-x-4">
         <div className="text-xl font-semibold">
           <span className="text-indigo-500 capitalize">{user.role}</span> Panel
         </div>
-        <div className="hidden lg:flex text-sm text-gray-300 px-4">
-          <span className="text-lg font-medium capitalize ">
-            {getGreeting()},{getRandomEmoji()}
-            {user.role}
+        <div className="hidden lg:flex text-sm text-gray-500 px-4">
+          <span className="text-lg font-medium capitalize">
+            {getGreeting()},{getRandomEmoji()} {user.role}
           </span>
         </div>
       </div>
 
+      {/* Hamburger Menu for Mobile */}
       <div className="lg:hidden">
-        <FaBars
-          className="w-6 h-6 text-white cursor-pointer"
-          //   onClick={toggleMenu}
-        />
+        <FaBars className="w-6 h-6 text-gray-800 cursor-pointer" />
       </div>
 
+      {/* Right Section */}
       <div className="flex items-center space-x-6">
-        <div className="hidden lg:flex items-center space-x-3 bg-slate-700 p-2 rounded-lg max-w-md">
+        {/* Search Bar (Hidden on Mobile) */}
+        <div className="hidden lg:flex items-center space-x-3 bg-gray-100 p-2 rounded-lg max-w-md">
           <span>
-            <FaSearch className="text-gray-300" />
+            <FaSearch className="text-gray-500" />
           </span>
           <input
             type="text"
             placeholder="Search..."
             name="search"
-            className="bg-transparent text-white outline-none placeholder-gray-400"
+            className="bg-transparent text-gray-800 outline-none placeholder-gray-500"
           />
         </div>
 
+        {/* Notifications */}
         <NotificationDropdown />
 
         {/* User Profile */}

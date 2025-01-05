@@ -12,20 +12,12 @@ import {
   FaRegEyeSlash,
   FaTrashAlt,
 } from "react-icons/fa";
-export const dynamic = 'force-dynamic'; // Mark the page as dynamic
 
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
 
 export const metadata = {
   title: "Manage Content",
 };
-
-// export async function generateStaticParams() {
-//   const { articles } = await getAllArticle();
-
-//   const ids = articles.map((article) => ({ id: article._id }));
-
-//   return ids;
-// }
 
 async function page() {
   const { articles } = await getAllArticle();
@@ -42,25 +34,27 @@ async function page() {
   });
 
   return (
-    <div className="bg-gray-900 min-h-screen py-8">
+    <div className="bg-white min-h-screen py-8">
       <div className="max-w-screen-xl mx-auto px-6">
-        <h1 className="text-4xl font-semibold text-white mb-6">Manage Posts</h1>
+        <h1 className="text-4xl font-semibold text-gray-900 mb-6">
+          Manage Posts
+        </h1>
 
         {/* Search and Filters */}
         <div className="mb-6 flex flex-wrap gap-4 items-center">
           <input
             type="text"
             placeholder="Search posts..."
-            className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <select className="py-3 px-4 border border-gray-700 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <select className="py-3 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="all">All Posts</option>
             <option value="recent">Recent Posts</option>
             <option value="old">Old Posts</option>
             <option value="published">Published Posts</option>
             <option value="unpublished">Unpublished Posts</option>
           </select>
-          <select className="py-3 px-4 border border-gray-700 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <select className="py-3 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="all">All Categories</option>
             {categories.map((category) => (
               <option key={category._id} value={category.slug}>
@@ -71,9 +65,9 @@ async function page() {
         </div>
 
         {/* Posts Table */}
-        <div className="overflow-x-auto rounded-lg shadow-lg bg-gray-800">
+        <div className="overflow-x-auto rounded-lg shadow-lg bg-white">
           <table className="min-w-full table-auto">
-            <thead className="bg-gray-700 text-gray-300">
+            <thead className="bg-gray-100 text-gray-900">
               <tr>
                 <th className="px-6 py-3 text-left">Image</th>
                 <th className="px-6 py-3 text-left">Title</th>
@@ -88,8 +82,8 @@ async function page() {
                 enrichedArticles.map((post) => (
                   <tr
                     key={post._id}
-                    className={`hover:bg-gray-700 ${
-                      post.published ? "bg-gray-800" : "bg-gray-900"
+                    className={`hover:bg-gray-200 ${
+                      post.published ? "bg-white" : "bg-gray-50"
                     }`}
                   >
                     <td className="px-6 py-4">
@@ -104,11 +98,11 @@ async function page() {
                     <td className="px-6 py-4">
                       <Link
                         href={`/news/${post.slug}`}
-                        className="text-gray-300 hover:underline"
+                        className="text-gray-900 hover:underline"
                       >
                         {post.title}
                       </Link>
-                      <div className="text-sm text-gray-300">
+                      <div className="text-sm text-gray-500">
                         {post.publishedAt
                           ? new Intl.DateTimeFormat("en-US", {
                               year: "numeric",
@@ -123,13 +117,13 @@ async function page() {
                     <td className="px-6 py-4">
                       <Link
                         href={`/author/${post?.author?.name}`}
-                        className="text-gray-300 hover:underline"
+                        className="text-gray-900 hover:underline"
                       >
                         {post?.author?.name}
                       </Link>
                     </td>
-                    <td className="px-6 py-4 text-gray-300">{post.category}</td>
-                    <td className="px-6 py-4 text-gray-300">{post.views}</td>
+                    <td className="px-6 py-4 text-gray-900">{post.category}</td>
+                    <td className="px-6 py-4 text-gray-900">{post.views}</td>
                     <td className="px-6 py-4 flex space-x-2 items-center">
                       <SubmitButton pendingLabel="Updating...">
                         <FaEdit className="inline mr-1" />
@@ -185,7 +179,7 @@ async function page() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="text-center py-4 text-gray-300">
+                  <td colSpan="6" className="text-center py-4 text-gray-500">
                     No posts found.
                   </td>
                 </tr>

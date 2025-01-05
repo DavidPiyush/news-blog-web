@@ -1,6 +1,7 @@
 import { Roboto } from "next/font/google";
 import "@/app/_styles/globals.css";
 import CookieConsent from "./_components/CookieConsent";
+import { Toaster } from "react-hot-toast";
 
 const roboto = Roboto({
   weight: ["400", "700"],
@@ -20,11 +21,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${roboto.className} antialiased `}
-      >
-        <CookieConsent/>
-          <main>{children}</main>
+      <body className={`${roboto.className} antialiased `}>
+        <CookieConsent />
+        <Toaster />
+        <main>{children}</main>
       </body>
     </html>
   );

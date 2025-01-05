@@ -3,7 +3,7 @@ import SideNavigation from "../_components/SideNavigation";
 
 export default function Layout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900">
+    <div className="min-h-screen flex flex-col ">
       <DashboardHeader />
       <div className="grid grid-cols-[18rem_1fr] h-full gap-12">
         <SideNavigation />

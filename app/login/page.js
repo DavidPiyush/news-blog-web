@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { FaEye, FaGoogle } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -25,6 +26,7 @@ const LoginPage = () => {
     if (res?.error) {
       setError("Invalid credentials");
     } else {
+      toast.success("Login sucessfully!");
       window.location.href = "/dashboard";
     }
 

@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import Pagination from "./Pagination"; // Import the reusable Pagination component
 import { useState } from "react";
 
-const PostList = ({ articles=[], header }) => {
+const PostList = ({ articles = [], header }) => {
   // Set up the pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 3;
@@ -37,14 +37,14 @@ const PostList = ({ articles=[], header }) => {
   };
 
   return (
-    <div className="bg-slate-800 text-gray-200 p-6 rounded-lg shadow-lg mb-12">
+    <div className="bg-white text-gray-800  p-6 rounded-lg shadow-lg mb-12">
       <h3 className="text-xl font-semibold mb-4">{header} Posts</h3>
       <ul className="space-y-6">
         {currentPosts.map((post) => (
           <li key={post._id} className="flex items-start border-b py-4">
             <Link href={post.slug} className="flex items-start w-full">
               <Image
-                src={post.coverImage}
+                src={post.coverImage || "/default-image.jpg"} // Default image URL
                 alt={post.title}
                 width={96}
                 height={96}
@@ -55,7 +55,7 @@ const PostList = ({ articles=[], header }) => {
                 <div className="text-sm text-gray-400">
                   {post.publishedAt && !isNaN(new Date(post.publishedAt))
                     ? format(new Date(post.publishedAt), "MMMM dd, yyyy")
-                    : "Invalid Date"}{" "}
+                    : "Date not available"}{" "}
                   | {post?.author?.name} | Views: {post.views}
                 </div>
                 <div

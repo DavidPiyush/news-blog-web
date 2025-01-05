@@ -37,8 +37,8 @@
     width: 60px;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 8px solid red; /*change the color */
-    border-right-color: red; /*change the color */
+    border: 8px solid #6C757D; /*change the color */
+    border-right-color: #6C757D; /*change the color */
     animation: rotate 1s infinite linear;
   }
 
@@ -47,7 +47,7 @@
     width: 20px;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 2px solid red; /*change the color */
+    border: 2px solid #6C757D; /*change the color */
     border-right-color: transparent;
     animation: rotate 1s infinite linear;
   }

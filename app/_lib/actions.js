@@ -54,14 +54,17 @@ export async function createPost(formData) {
 
   if (!id) throw new Error("User ID is required.");
   if (!category) throw new Error("Category is required.");
+
   const combinedDateTime = `${year || new Date().toISOString().split("T")[0]}T${
     publishTime || new Date().toTimeString().split(" ")[0]
   }`;
-  const mongoDate = parse(
-    combinedDateTime,
-    "yyyy-MM-dd'T'HH:mm:ss",
-    new Date()
-  );
+
+  const mongoDate = new Date(combinedDateTime);
+
+  // Validate if the date is correct
+  if (isNaN(mongoDate)) {
+    throw new Error("Invalid date or time format.");
+  }
 
   // Validate if the date is correct
   if (isNaN(mongoDate)) {
@@ -108,12 +111,7 @@ export async function createPost(formData) {
   try {
     await CreateArticle(updateData);
 
-    revalidatePath("/");
     revalidatePath("/dashboard");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/article");
-
-    return { success: true };
   } catch (error) {
     console.error("Error creating the article:", error);
     throw new Error("Failed to create the article.");
@@ -136,11 +134,7 @@ export async function postApproval(formData) {
       isApproved: approvalStatus,
     });
 
-    revalidatePath("/");
     revalidatePath("/dashboard");
-    revalidatePath("/dashboard/setting");
-    revalidatePath("/dashboard/setting/approval");
-    return { success: true };
   } catch (error) {
     console.error("Error during approval:", error);
     throw new Error("Failed to update article approval status");
@@ -157,10 +151,8 @@ export async function postDelete(formData) {
     await deleteArticle(id);
 
     // Revalidate paths to update the UI
-    revalidatePath("/");
+
     revalidatePath("/dashboard");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/manage");
   } catch (error) {
     console.error("Error in postDelete:", error);
     // Optionally, handle the error (e.g., show a toast notification)
@@ -186,10 +178,7 @@ export async function postPublished(formData) {
     // Update the article
     await UpdateArticle(id, updateData);
 
-    revalidatePath("/");
     revalidatePath("/dashboard");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/manage");
 
     return { success: true };
   } catch (error) {
@@ -215,10 +204,7 @@ export async function categoryCreate(formData) {
 
   await CreateCategory(categoryData);
 
-  revalidatePath("/");
   revalidatePath("/dashboard");
-  revalidatePath("/dashboard/content");
-  revalidatePath("/dashboard/content/categories");
 }
 
 export async function categoryEdit(formData) {
@@ -248,10 +234,7 @@ export async function categoryEdit(formData) {
     console.log(updatedData);
     await UpdateCategory(id, updatedData);
 
-    revalidatePath("/");
     revalidatePath("/dashboard");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/categories");
 
     return { success: true, message: "Category updated successfully." };
   } catch (error) {
@@ -269,10 +252,8 @@ export async function categoryDelete(formData) {
     await deleteCategory(id);
 
     // Revalidate paths to update the UI
-    revalidatePath("/");
+
     revalidatePath("/dashboard");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/categories");
   } catch (error) {
     console.error("Error in postDelete:", error);
     // Optionally, handle the error (e.g., show a toast notification)
@@ -296,9 +277,7 @@ export async function updateRoleByAdmin(formData) {
   // Update the article
   await updateUser(id, updateData);
 
-  revalidatePath("/");
   revalidatePath("/dashboard");
-  revalidatePath("/dashboard/user");
 }
 export async function deleteUserByAdmin(formData) {
   const id = formData.get("id");
@@ -309,7 +288,5 @@ export async function deleteUserByAdmin(formData) {
 
   await deleteUser(id);
 
-  revalidatePath("/");
   revalidatePath("/dashboard");
-  revalidatePath("/dashboard/user");
 }
