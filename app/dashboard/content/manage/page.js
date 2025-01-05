@@ -1,10 +1,6 @@
 import SubmitButton from "@/app/_components/SubmitButton";
 import { postDelete, postPublished } from "@/app/_lib/actions";
-import {
-  getAllArticle,
-  getAllCategory,
-  getFilteredArticles,
-} from "@/app/_lib/data-service";
+import { getAllArticle, getAllCategory } from "@/app/_lib/data-service";
 import Link from "next/link";
 import {
   FaCheckCircle,
@@ -14,6 +10,8 @@ import {
 } from "react-icons/fa";
 
 export const dynamic = "force-dynamic"; // Mark the page as dynamic
+
+export const revalidate = 0;
 
 export const metadata = {
   title: "Manage Content",

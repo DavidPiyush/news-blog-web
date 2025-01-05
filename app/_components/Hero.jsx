@@ -37,21 +37,23 @@ function Hero({ articles, categories }) {
             <div className="absolute inset-0 bg-black/30"></div>
 
             <div className="text-white overflow-hidden absolute bottom-[150px] py-4 flex justify-center items-start flex-col ml-24 px-6 space-y-4">
-              <span className="bg-blue-400 px-2 py-2 text-white rounded-lg cursor-pointer text-sm font-bold uppercase -tracking-tight">
-                {imgSrc.categories.includes(categories._id).name ||
-                  "Technology"}
-              </span>
-              <h2 className="text-4xl font-bold leading-tight">
-                {imgSrc.title}
-              </h2>
-              <p className="text-sm text-gray-300 ">
-                {imgSrc?.author?.name} -{" "}
-                {new Date(imgSrc.publishedAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </p>
+              <Link href={`news/${imgSrc.slug}`}>
+                <span className="bg-blue-400 px-2 py-2 text-white rounded-lg cursor-pointer text-sm font-bold uppercase -tracking-tight">
+                  {imgSrc.categories.includes(categories._id).name ||
+                    "Technology"}
+                </span>
+                <h2 className="text-4xl font-bold leading-tight">
+                  {imgSrc.title}
+                </h2>
+                <p className="text-sm text-gray-300 ">
+                  {imgSrc?.author?.name} -{" "}
+                  {new Date(imgSrc.publishedAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+              </Link>
             </div>
           </div>
         ))}
@@ -65,11 +67,13 @@ function Hero({ articles, categories }) {
               className="flex gap-8 items-center h-[200px]"
               key={post._id}
             >
-              <img
-                src={post.coverImage}
-                alt={post.title}
-                className="w-[153px] h-[102px] rounded-lg"
-              />
+              <Link href={`news/${post.slug}`}>
+                <img
+                  src={post.coverImage}
+                  alt={post.title}
+                  className="w-[153px] h-[102px] rounded-lg"
+                />
+              </Link>
               <div className="space-y-4">
                 <Link
                   href={`news/${post.slug}`}

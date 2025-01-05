@@ -1,9 +1,5 @@
 import EditorContentPage from "@/app/_components/EditorContentPage";
-import {
-  getAllArticle,
-  getAllCategory,
-  getUser,
-} from "@/app/_lib/data-service";
+import { getAllCategory, getUser } from "@/app/_lib/data-service";
 import { getServerSession } from "next-auth";
 
 export const metadata = {
@@ -14,8 +10,6 @@ async function page() {
   const session = await getServerSession();
   const { user } = await getUser(session.user.email);
   const { categories } = await getAllCategory();
-
-  
 
   return (
     <div className="p-8 min-h-screen">

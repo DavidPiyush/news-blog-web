@@ -47,68 +47,70 @@ export async function updateProfile(formData) {
 }
 
 export async function createPost(formData) {
-  const id = formData.get("userID").trim();
-  const category = formData.get("category");
-  const year = formData.get("publishedYear");
-  const publishTime = formData.get("publishTime");
-
-  if (!id) throw new Error("User ID is required.");
-  if (!category) throw new Error("Category is required.");
-
-  const combinedDateTime = `${year || new Date().toISOString().split("T")[0]}T${
-    publishTime || new Date().toTimeString().split(" ")[0]
-  }`;
-
-  const mongoDate = new Date(combinedDateTime);
-
-  // Validate if the date is correct
-  if (isNaN(mongoDate)) {
-    throw new Error("Invalid date or time format.");
-  }
-
-  // Validate if the date is correct
-  if (isNaN(mongoDate)) {
-    throw new Error("Invalid date or time format.");
-  }
-
-  // Prepare the data for update
-  const updateData = {};
-
-  formData.forEach((value, key) => {
-    // Exclude certain fields from the update
-    if (
-      value &&
-      key !== "userID" &&
-      key !== "category" &&
-      key !== "publishedYear" &&
-      key !== "publishTime"
-    ) {
-      updateData[key] = value;
-    }
-  });
-
-  // Check if there's any valid data to update
-  if (Object.keys(updateData).length === 0) {
-    throw new Error("No valid fields to update.");
-  }
-
-  // Process the category and slug
-  const categoryParts = category.split("%");
-  const categoryId = categoryParts[0].trim();
-
-  if (!Types.ObjectId.isValid(categoryId)) {
-    throw new Error("Invalid category ID.");
-  }
-
-  updateData.categories = new Types.ObjectId(categoryId);
-
-  updateData.slug = slugify(updateData.title.trim());
-
-  // Add additional fields
-  updateData.author = new Types.ObjectId(id);
-  updateData.publishedAt = mongoDate;
-  // Call the CreateArticle function to insert the post into the database
   try {
+    const id = formData.get("userID").trim();
+    const category = formData.get("category");
+    const year = formData.get("publishedYear");
+    const publishTime = formData.get("publishTime");
+
+    if (!id) throw new Error("User ID is required.");
+    if (!category) throw new Error("Category is required.");
+
+    const combinedDateTime = `${
+      year || new Date().toISOString().split("T")[0]
+    }T${publishTime || new Date().toTimeString().split(" ")[0]}`;
+
+    const mongoDate = new Date(combinedDateTime);
+
+    // Validate if the date is correct
+    if (isNaN(mongoDate)) {
+      throw new Error("Invalid date or time format.");
+    }
+
+    // Validate if the date is correct
+    if (isNaN(mongoDate)) {
+      throw new Error("Invalid date or time format.");
+    }
+
+    // Prepare the data for update
+    const updateData = {};
+
+    formData.forEach((value, key) => {
+      // Exclude certain fields from the update
+      if (
+        value &&
+        key !== "userID" &&
+        key !== "category" &&
+        key !== "publishedYear" &&
+        key !== "publishTime"
+      ) {
+        updateData[key] = value;
+      }
+    });
+
+    // Check if there's any valid data to update
+    if (Object.keys(updateData).length === 0) {
+      throw new Error("No valid fields to update.");
+    }
+
+    // Process the category and slug
+    const categoryParts = category.split("%");
+    const categoryId = categoryParts[0].trim();
+
+    if (!Types.ObjectId.isValid(categoryId)) {
+      throw new Error("Invalid category ID.");
+    }
+
+    updateData.categories = new Types.ObjectId(categoryId);
+
+    updateData.slug = slugify(updateData.title.trim());
+
+    // Add additional fields
+    updateData.author = new Types.ObjectId(id);
+    updateData.publishedAt = mongoDate;
+
+    // Call the CreateArticle function to insert the post into the database
+
     await CreateArticle(updateData);
 
     revalidatePath("/dashboard");

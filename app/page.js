@@ -12,12 +12,13 @@ import TechnologyNews from "./_components/TechnologyNews";
 import Footer from "./_components/Footer";
 export const dynamic = "force-dynamic"; // Mark the page as dynamic
 
+export const revalidate = 0;
+
 export const metadata = {
   title: "News App",
 };
 
 // Revalidate data every hour
-export const revalidate = 3600;
 
 export default async function Home() {
   try {

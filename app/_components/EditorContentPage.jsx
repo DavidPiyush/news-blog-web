@@ -5,7 +5,6 @@ import { CldUploadButton } from "next-cloudinary";
 import { FaEdit } from "react-icons/fa";
 import { useState } from "react";
 import SubmitButton from "./SubmitButton";
-import toast from "react-hot-toast"; // Import react-hot-toast for toast notifications
 import { createPost } from "../_lib/actions";
 
 

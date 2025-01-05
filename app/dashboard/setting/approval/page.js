@@ -4,6 +4,8 @@ import { getAllArticle } from "@/app/_lib/data-service";
 import Image from "next/image";
 import Link from "next/link";
 
+export const revalidate = 0;
+
 async function page({ searchParams }) {
   const { isApproved = "all", author = "", search = "" } = searchParams || {};
 
@@ -15,24 +17,24 @@ async function page({ searchParams }) {
   });
 
   return (
-    <div className="p-8 min-h-screen">
-      <div className="max-w-6xl mx-auto bg-slate-800 shadow-lg rounded-lg p-6 mt-6">
-        <h1 className="text-2xl font-bold text-gray-200 mb-6">
+    <div className="p-8 min-h-screen bg-white text-black ">
+      <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6 mt-6 ">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 ">
           Content Approval
         </h1>
 
         {/* Filter Section */}
         <section className="mb-6">
-          <form method="GET" className="flex items-center space-x-4">
-            <fieldset>
-              <label htmlFor="statusFilter" className="text-white">
+          <form method="GET" className="flex items-center space-x-4 flex-wrap">
+            <fieldset className="flex items-center">
+              <label htmlFor="statusFilter" className="text-gray-900 ">
                 Filter by Status:
               </label>
               <select
                 name="isApproved"
                 id="statusFilter"
                 defaultValue={isApproved}
-                className="border border-gray-300 p-2 rounded-lg ml-2"
+                className="border border-gray-300 p-2 rounded-lg ml-2  "
               >
                 <option value="all">All</option>
                 <option value="true">Approved</option>
@@ -40,8 +42,8 @@ async function page({ searchParams }) {
               </select>
             </fieldset>
 
-            <fieldset>
-              <label htmlFor="authorFilter" className="text-white">
+            <fieldset className="flex items-center">
+              <label htmlFor="authorFilter" className="text-gray-900 ">
                 Filter by Author:
               </label>
               <input
@@ -50,12 +52,12 @@ async function page({ searchParams }) {
                 id="authorFilter"
                 placeholder="Enter author's name"
                 defaultValue={author}
-                className="border border-gray-300 p-2 rounded-lg ml-2"
+                className="border border-gray-300 p-2 rounded-lg ml-2  "
               />
             </fieldset>
 
-            <fieldset>
-              <label htmlFor="search" className="text-white">
+            <fieldset className="flex items-center">
+              <label htmlFor="search" className="text-gray-900 ">
                 Search:
               </label>
               <input
@@ -64,13 +66,13 @@ async function page({ searchParams }) {
                 id="search"
                 placeholder="Search articles..."
                 defaultValue={search}
-                className="border border-gray-300 p-2 rounded-lg ml-2"
+                className="border border-gray-300 p-2 rounded-lg ml-2  "
               />
             </fieldset>
 
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 dark:bg-blue-500 dark:hover:bg-blue-600"
             >
               Apply Filters
             </button>
@@ -83,10 +85,10 @@ async function page({ searchParams }) {
             <article
               key={article._id}
               className={`flex justify-between items-center p-4 rounded-lg shadow-sm ${
-                article.isApproved ? "bg-slate-900" : "bg-slate-600"
-              }`}
+                article.isApproved ? "bg-white" : "bg-slate-100"
+              } `}
             >
-              <div>
+              <div className="flex items-center space-x-4">
                 <Link
                   href={`/news/${article.slug}`}
                   className="flex space-x-4 cursor-pointer"
@@ -99,10 +101,10 @@ async function page({ searchParams }) {
                     className="w-20 h-20 object-cover rounded-lg transition-transform transform hover:scale-105"
                   />
                   <div>
-                    <h3 className="text-lg font-semibold text-white hover:text-blue-600">
+                    <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600  ">
                       {article.title}
                     </h3>
-                    <p className="text-sm text-gray-200">
+                    <p className="text-sm text-gray-600 ">
                       By {article.author.name} | Submitted on{" "}
                       {new Date(article.publishedAt).toLocaleDateString(
                         "en-US",
@@ -125,7 +127,10 @@ async function page({ searchParams }) {
                   <form action={postApproval}>
                     <input type="hidden" name="Id" value={article._id} />
                     <input type="hidden" name="isApproved" value="true" />
-                    <SubmitButton pendingLabel={"Approving..."}>
+                    <SubmitButton
+                      pendingLabel={"Approving..."}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
                       Approve
                     </SubmitButton>
                   </form>
@@ -134,7 +139,10 @@ async function page({ searchParams }) {
                   <form action={postApproval}>
                     <input type="hidden" name="Id" value={article._id} />
                     <input type="hidden" name="isApproved" value="false" />
-                    <SubmitButton pendingLabel={"Rejecting..."}>
+                    <SubmitButton
+                      pendingLabel={"Rejecting..."}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
                       Reject
                     </SubmitButton>
                   </form>
