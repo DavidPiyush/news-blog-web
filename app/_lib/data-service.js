@@ -219,28 +219,28 @@ export async function getArticlesBasedOnSlug(slug) {
   }
 }
 
-// export async function CreateArticle(data) {
-//   try {
-//     const response = await fetch(`${baseUrl}/api/articles/create`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(data),
-//     });
+export async function CreateArticle(data) {
+  try {
+    const response = await fetch(`${baseUrl}/api/articles/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-//     if (!response.ok) {
-//       throw new Error(
-//         `Failed to create article: ${response.status} ${response.statusText}`
-//       );
-//     }
+    if (!response.ok) {
+      throw new Error(
+        `Failed to create article: ${response.status} ${response.statusText}`
+      );
+    }
 
-//     return response.json();
-//   } catch (error) {
-//     console.error("Error creating article:", error);
-//     throw error;
-//   }
-// }
+    return response.json();
+  } catch (error) {
+    console.error("Error creating article:", error);
+    throw error;
+  }
+}
 
 export async function UpdateArticle(articleId, data) {
   try {

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import {
+  CreateArticle,
   CreateCategory,
   deleteArticle,
   deleteCategory,
@@ -110,9 +111,7 @@ export async function createPost(formData) {
 
     if (role === "admin") updateData.isApproved = true;
 
-    await connectToDB();
-    const newArticle = new Article(updateData);
-    await newArticle.save();
+    await CreateArticle(updateData);
 
     revalidatePath("/dashboard");
     return { success: true };
