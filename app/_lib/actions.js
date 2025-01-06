@@ -118,6 +118,8 @@ export async function createPost(formData) {
     return { success: true };
   } catch (error) {
     throw new Error(error.message || "Failed to create the article.");
+
+    return { success: false, message: error.message };
   }
 }
 

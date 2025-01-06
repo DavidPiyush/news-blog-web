@@ -44,16 +44,14 @@ function EditorContentPage({ userID, categories }) {
         className="space-y-6"
         action={async (formData) => {
           try {
-            const { success } = await createPost(formData);
-
-            if (success) {
+            const response = await createPost(formData);
+            if (response && response.success) {
               toast.success("Article created successfully!");
+            } else {
+              toast.error("Failed to create the article.");
             }
           } catch (error) {
-            // Ensure error is a string before passing it to toast.error
-            const errorMessage =
-              error.message || "An error occurred while creating the article.";
-            toast.error(errorMessage);
+            toast.error(error.message || "An unexpected error occurred.");
           }
         }}
       >
