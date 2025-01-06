@@ -44,7 +44,9 @@ function EditorContentPage({ userID, categories }) {
         className="space-y-6"
         action={async (formData) => {
           try {
+            ("use server");
             const response = await createPost(formData);
+            console.log(response);
             if (response && response.success) {
               toast.success("Article created successfully!");
             } else {
