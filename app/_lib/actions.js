@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import {
+  CreateArticle,
   CreateCategory,
   deleteArticle,
   deleteCategory,
@@ -110,9 +111,7 @@ export async function createPost(formData) {
 
     if (role === "admin") updateData.isApproved = true;
 
-    await connectToDB();
-    const newArticle = new Article(updateData);
-    await newArticle.save();
+    CreateArticle(updateData);
 
     revalidatePath("/dashboard");
     return { success: true };
@@ -135,18 +134,10 @@ export async function postApproval(formData) {
 
     const approvalStatus = isApproved === "true";
 
-    // await UpdateArticle(id, {
-    //   isApproved: approvalStatus,
-    // });
+    await UpdateArticle(id, {
+      isApproved: approvalStatus,
+    });
 
-    await Article.findByIdAndDelete(
-      id,
-      { isApproved: approvalStatus },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
     revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
@@ -162,7 +153,7 @@ export async function postDelete(formData) {
       throw new Error("Article ID is missing in the form data.");
     }
 
-    await Article.findOneAndDelete(id);
+    await deleteArticle(id);
     // Revalidate paths to update the UI
 
     revalidatePath("/dashboard/content/manage");
@@ -190,10 +181,12 @@ export async function postPublished(formData) {
 
     // Update the article
 
-    await Article.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
-    });
+    await UpdateArticle(id, updateData);
+
+    // await Article.findByIdAndUpdate(id, updateData, {
+    //   new: true,
+    //   runValidators: true,
+    // });
 
     revalidatePath("/dashboard");
 
