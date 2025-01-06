@@ -113,12 +113,11 @@ export async function createPost(formData) {
 
     CreateArticle(updateData);
 
+    revalidatePath("/");
     revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     throw new Error(error.message || "Failed to create the article.");
-
-    return { success: false, message: error.message };
   }
 }
 
