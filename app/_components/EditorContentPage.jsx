@@ -7,16 +7,15 @@ import { useState } from "react";
 import SubmitButton from "./SubmitButton";
 import { createPost } from "../_lib/actions";
 import toast from "react-hot-toast";
+import { CreateArticle } from "../_lib/data-service";
 
 function EditorContentPage({ userID, categories }) {
   const [coverImage, setCoverImage] = useState(null);
   const [content, setContent] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduled, setIsScheduled] = useState(false);
   const [publishedAt, setPublishedAt] = useState(
     new Date().toISOString().split("T")[0]
   );
-
   const [publishTime, setPublishTime] = useState("12:00");
 
   const handleImageUpload = (result) => {
@@ -28,42 +27,38 @@ function EditorContentPage({ userID, categories }) {
     setContent(htmlContent);
   };
 
-  const handleModalClose = async () => {
-    setIsModalOpen(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    const formData = new FormData(e.target);
+    formData.append("content", content);
+
+    console.log(Object.fromEntries(formData));
+    try {
+      const response = await CreateArticle(Object.fromEntries(formData));
+      if (response?.success) {
+        toast.success("Article created successfully!");
+      } else {
+        toast.error("Failed to create the article.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("An error occurred while creating the article.");
+    }
   };
 
   const inputClass =
     "px-5 py-3 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-400 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   return (
-    <div className="rounded-xl w-full max-w-5xl p-8 bg-white text-gray-800  ">
-      <h1 className="text-4xl font-bold text-gray-800  mb-6 text-center">
+    <div className="rounded-xl w-full max-w-5xl p-8 bg-white text-gray-800">
+      <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
         Create News Article
       </h1>
-      <form
-        className="space-y-6"
-        action={async (formData) => {
-          try {
-            ("use server");
-            const response = await createPost(formData);
-            console.log(response);
-            if (response && response.success) {
-              toast.success("Article created successfully!");
-            } else {
-              toast.error("Failed to create the article.");
-            }
-          } catch (error) {
-            toast.error(error.message || "An unexpected error occurred.");
-          }
-        }}
-      >
-        {/* Send the user id to populate user post */}
-        <input
-          type="text"
-          className="hidden"
-          name="userID"
-          defaultValue={userID}
-        />
+      <form className="space-y-6" onSubmit={handleSubmit}>
+        {/* User ID */}
+        <input type="hidden" name="userID" defaultValue={userID} />
+
         {/* Title */}
         <div>
           <label className="text-lg font-semibold text-gray-700">Title</label>
@@ -71,10 +66,11 @@ function EditorContentPage({ userID, categories }) {
             type="text"
             className={inputClass}
             name="title"
-            placeholder="Enter the news sub heading"
+            placeholder="Enter the news subheading"
             required
           />
         </div>
+
         {/* Sub Title */}
         <div>
           <label className="text-lg font-semibold text-gray-700">
@@ -88,22 +84,18 @@ function EditorContentPage({ userID, categories }) {
             required
           />
         </div>
+
         {/* Summary */}
         <div>
-          <label
-            htmlFor="summary"
-            className="text-lg font-semibold text-gray-700"
-          >
-            Summary
-          </label>
+          <label className="text-lg font-semibold text-gray-700">Summary</label>
           <textarea
-            id="summary"
             name="summary"
             className={`${inputClass} resize-none`}
             placeholder="Enter the news summary"
             rows="4"
           />
         </div>
+
         {/* Category */}
         <div>
           <label className="text-lg font-semibold text-gray-700">
@@ -112,47 +104,25 @@ function EditorContentPage({ userID, categories }) {
           <select className={inputClass} name="category" required>
             <option value="">Select a category</option>
             {categories.map((category) => (
-              <option
-                key={category._id}
-                value={`${category._id} % ${category.slug}`}
-                name={`${category._id} % ${category.slug}`}
-                defaultValue={`${category._id} % ${category.slug}`}
-              >
+              <option key={category._id} value={category._id}>
                 {category.name}
               </option>
             ))}
           </select>
         </div>
+
         {/* Tags */}
         <div>
-          <label
-            htmlFor="tags-input"
-            className="text-lg font-semibold text-gray-700 block mb-2"
-          >
-            Tags
-          </label>
+          <label className="text-lg font-semibold text-gray-700">Tags</label>
           <input
-            id="tags-input"
             type="text"
             className={inputClass}
             name="tags"
             placeholder="Enter comma-separated tags"
           />
-          <small className="text-gray-500 block mt-2">
+          <small className="text-gray-500">
             Separate tags with commas (e.g., News, Technology, Sports)
           </small>
-        </div>
-        {/* Related Posts */}
-        <div>
-          <label className="text-lg font-semibold text-gray-700">
-            Related Posts (Comma-separated links)
-          </label>
-          <input
-            type="text"
-            className={inputClass}
-            name="relatedPosts"
-            placeholder="Enter related post links"
-          />
         </div>
 
         {/* Image Gallery */}
@@ -161,15 +131,10 @@ function EditorContentPage({ userID, categories }) {
             Image Gallery
           </label>
           <div className="relative group">
-            <input
-              type="text"
-              className="hidden"
-              name="coverImage"
-              defaultValue={coverImage}
-            />
+            <input type="hidden" name="coverImage" defaultValue={coverImage} />
             <Image
               src={coverImage || "/default-image.jpg"}
-              alt="Profile"
+              alt="Cover"
               width={160}
               height={160}
               className="w-full h-40 object-cover rounded-lg shadow-md"
@@ -193,46 +158,17 @@ function EditorContentPage({ userID, categories }) {
         {/* Content */}
         <div>
           <label className="text-lg font-semibold text-gray-700">Content</label>
-          <div className="w-full ">
-            <QuillEditor onChange={handleEditorChange} />
-          </div>
-        </div>
-        <input type="hidden" name="content" value={content} />
-
-        {/* Reading Time */}
-        {/* <div>
-          <label className="text-lg font-semibold text-gray-700">
-            Reading Time (in minutes)
-          </label>
-          <input
-            type="number"
-            className={inputClass}
-            name="readingTime"
-            placeholder="Enter reading time"
-          />
-        </div> */}
-        {/* Feature Checkbox */}
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            value="true"
-            name="isFeatured"
-            className="h-5 w-5  bg-transparent text-slate-300"
-          />
-          <label className="ml-2 text-lg font-semibold text-gray-700">
-            Feature this post
-          </label>
+          <QuillEditor onChange={handleEditorChange} />
+          <input type="hidden" name="content" value={content} />
         </div>
 
         {/* Schedule for Later */}
         <div className="flex items-center mt-4">
           <input
             type="checkbox"
-            value="true"
             checked={isScheduled}
             onChange={() => setIsScheduled(!isScheduled)}
             className="h-5 w-5 text-blue-500"
-            name="publishedAt"
           />
           <label className="ml-2 text-lg font-semibold text-gray-700">
             Schedule for Later
@@ -246,9 +182,9 @@ function EditorContentPage({ userID, categories }) {
             <input
               type="date"
               value={publishedAt}
-              name="publishedYear"
+              name="publishedAt"
               onChange={(e) => setPublishedAt(e.target.value)}
-              className="w-full p-4 mt-2 border border-gray-300 rounded-xl focus:outline-none shadow-lg"
+              className={inputClass}
             />
             <label className="text-lg font-semibold text-gray-700 mt-4">
               Publish Time
@@ -258,7 +194,7 @@ function EditorContentPage({ userID, categories }) {
               value={publishTime}
               name="publishTime"
               onChange={(e) => setPublishTime(e.target.value)}
-              className="w-full p-4 mt-2 border border-gray-300 rounded-xl focus:outline-none shadow-lg"
+              className={inputClass}
             />
           </div>
         )}
@@ -267,23 +203,15 @@ function EditorContentPage({ userID, categories }) {
         <div>
           <label className="text-lg font-semibold text-gray-700">Status</label>
           <select className={inputClass} name="status">
-            <option value="draft" name="draft">
-              Draft
-            </option>
-            <option value="published" name="published">
-              Publish
-            </option>
-            <option value="archived" name="archived">
-              Private
-            </option>
+            <option value="draft">Draft</option>
+            <option value="published">Publish</option>
+            <option value="archived">Private</option>
           </select>
         </div>
 
         {/* Submit Button */}
-
-        <SubmitButton pendingLabel={"create new article..."}>
-          {" "}
-          Create a article{" "}
+        <SubmitButton pendingLabel={"Creating article..."}>
+          Create Article
         </SubmitButton>
       </form>
     </div>

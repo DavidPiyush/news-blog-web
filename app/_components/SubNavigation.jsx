@@ -35,7 +35,7 @@ async function SubNavigation() {
             {/* Dropdown Content */}
             <div className="absolute left-0 w-[320px] bg-white shadow-xl rounded-lg opacity-0 group-hover:opacity-100 transform transition-all duration-300 ease-in-out z-50 group-hover:block hidden">
               <ul className="mt-2 p-4 space-y-2">
-                {categories.map((item) => (
+                {categories?.map((item) => (
                   <li className="relative group" key={item._id}>
                     <Link
                       href={`${item.slug}`}
@@ -60,7 +60,7 @@ async function SubNavigation() {
             {/* Dropdown Content */}
             <div className="absolute left-0 w-full bg-white shadow-xl rounded-lg opacity-0 group-hover:opacity-100 transform transition-all duration-300 ease-in-out z-50 group-hover:block hidden">
               <div className="mt-2 p-3 flex gap-4 w-[900px] bg-white border-t border-gray-200 rounded-lg">
-                {articles.slice(0, 5).map((article) => (
+                {articles?.slice(0, 5)?.map((article) => (
                   <div
                     key={article.id}
                     className="border border-gray-300 rounded-lg shadow-sm overflow-hidden bg-transparent transition-all transform hover:scale-105 hover:shadow-lg w-1/4"
