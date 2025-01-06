@@ -17,6 +17,7 @@ import { Types } from "mongoose";
 import { connectToDB } from "./connectDB";
 import Article from "@/models/ArticleModel";
 import User from "@/models/UserModel";
+import { calculateReadingTimeFromHTML } from "./helper";
 
 export async function updateProfile(formData) {
   try {
@@ -54,6 +55,7 @@ export async function createPost(formData) {
     const category = formData.get("category");
     const year = formData.get("publishedYear");
     const publishTime = formData.get("publishTime");
+    const content = formData.get("content")
 
     if (!id) throw new Error("User ID is required.");
     if (!category) throw new Error("Category is required.");
@@ -108,15 +110,19 @@ export async function createPost(formData) {
     updateData.author = new Types.ObjectId(id);
     updateData.publishedAt = mongoDate;
 
+    const readingTime = calculateReadingTimeFromHTML(content)
+
+    updateData.readingTime = readingTime.readingTimeMinutes;
+
     if (role == "admin") updateData.isApproved = true;
 
     await connectToDB();
     const newArticle = new Article(updateData);
-    await newArticle.save();
+     await newArticle.save();
     // await CreateArticle(updateData);
 
     revalidatePath("/dashboard");
-    return { success: true, message: "Article created sucessfully!" };
+    return {success: true };
   } catch (error) {
     throw new Error("Failed to create the article.");
   }

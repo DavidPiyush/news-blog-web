@@ -15,11 +15,15 @@ function Hero({ articles, categories }) {
     return () => clearInterval(interval);
   }, []);
 
+ const featuredArticles = articles.filter((post) => post.isFeatured);
+
+  
+
   return (
     <div className="relative ">
       {/* Background Image Slider */}
       <div className="h-[569px] relative z-0">
-        {articles.map((imgSrc, index) => (
+        {featuredArticles?.map((imgSrc, index) => (
           <div
             key={index}
             className={`absolute inset-0 transition-opacity duration-1000 ${

@@ -23,4 +23,23 @@ export function getRandomEmoji() {
   return emojis[Math.floor(Math.random() * emojis.length)];
 }
 
+export function calculateReadingTimeFromHTML(htmlContent) {
+  const wordsPerMinute = 200; // Average reading speed
+
+  // Remove HTML tags
+  const plainText = htmlContent.replace(/<[^>]*>/g, "").trim();
+
+  // Split text into words
+  const words = plainText.split(/\s+/);
+  const wordCount = words.length;
+
+  // Calculate reading time
+  const readingTimeMinutes = Math.ceil(wordCount / wordsPerMinute);
+
+  return {
+    wordCount,
+    readingTimeMinutes,
+    readingTimeText: `${readingTimeMinutes} min read`,
+  };
+}
 

@@ -16,8 +16,6 @@ async function page() {
   const { articles } = await getAllArticle();
   const { categories } = await getAllCategory();
 
-  console.log(categories);
-
   const enrichedArticles = articles.map((article) => {
     const matchedCategory = categories.find((category) => {
       return category._id === article.categories;
@@ -31,7 +29,7 @@ async function page() {
 
   // console.log(enrichedArticles);
   return (
-    <div className="bg-white min-h-screen py-8">
+    <div className=" min-h-screen py-8">
       <div className="max-w-screen-xl mx-auto px-6">
         <h1 className="text-4xl font-semibold text-gray-900 mb-6">
           Manage Posts
@@ -143,7 +141,7 @@ async function page() {
                         {post.status == "draft" ? (
                           <SubmitButton
                             pendingLabel="Publishing..."
-                            className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-3 py-2 text-sm"
+                            className="bg-green-600 hover:bg-green-700 "
                           >
                             <FaCheckCircle className="inline mr-1" />
                             {post.status}
@@ -151,7 +149,7 @@ async function page() {
                         ) : (
                           <SubmitButton
                             pendingLabel="Unpublishing..."
-                            className="bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg px-3 py-2 text-sm"
+                            className="bg-yellow-600 hover:bg-yellow-700 "
                           >
                             <FaRegEyeSlash className="inline mr-1" />
                             {post.status}

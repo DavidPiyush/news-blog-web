@@ -43,9 +43,13 @@ function EditorContentPage({ userID, categories }) {
       <form
         className="space-y-6"
         action={async (formData) => {
-          const { success, message } = await createPost(formData);
-          if (success) toast.success(message);
-          if (!success) toast.error("Failed to create the article");
+          try {
+            const { success } = await createPost(formData);
+
+            if (success) toast.success("Article created sucessfully!");
+          } catch (error) {
+            toast.error(error);
+          }
         }}
       >
         {/* Send the user id to populate user post */}
@@ -191,7 +195,7 @@ function EditorContentPage({ userID, categories }) {
         <input type="hidden" name="content" value={content} />
 
         {/* Reading Time */}
-        <div>
+        {/* <div>
           <label className="text-lg font-semibold text-gray-700">
             Reading Time (in minutes)
           </label>
@@ -201,7 +205,7 @@ function EditorContentPage({ userID, categories }) {
             name="readingTime"
             placeholder="Enter reading time"
           />
-        </div>
+        </div> */}
         {/* Feature Checkbox */}
         <div className="flex items-center">
           <input

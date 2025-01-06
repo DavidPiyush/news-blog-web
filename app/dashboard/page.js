@@ -1,15 +1,20 @@
 import { FaNewspaper, FaTag, FaUsers } from "react-icons/fa6";
-import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
+import {
+  getAllArticle,
+  getAllCategory,
+  getFilteredArticles,
+} from "../_lib/data-service";
 import PostList from "../_components/PostList";
 
 export const dynamic = "force-dynamic"; // Mark the page as dynamic
+export const revalidate = 0;
 
 export const metadata = {
   title: "Dashboard",
 };
 
 async function Page() {
-  const articles = await getFilteredArticles();
+  const { articles } = await getAllArticle();
   const categories = await getAllCategory();
 
   const status = "draft";
@@ -24,8 +29,8 @@ async function Page() {
     .sort((a, b) => b.views - a.views);
 
   return (
-    <div className="p-8 min-h-screen bg-gray-50">
-      <h2 className="text-3xl font-bold text-gray-800 mb-8">Dashboard</h2>
+    <div className="p-8 min-h-screen ">
+      <h2 className="text-4xl font-bold text-gray-800 mb-8">Dashboard</h2>
 
       {/* Metrics Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">

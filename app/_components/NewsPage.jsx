@@ -19,6 +19,7 @@ import NewsLetter from "./NewsLetter";
 import AdsVerticalBig from "./AdsVertical";
 import DangerousSetHtml from "./DangerousSetHtml";
 function NewsPage({ article = [], user = [], articles = [] }) {
+  console.log(article);
   return (
     <section className="mt-12 max-w-7xl mx-auto ">
       <div className="grid grid-cols-1 md:grid-cols-8 gap-10">
@@ -26,7 +27,7 @@ function NewsPage({ article = [], user = [], articles = [] }) {
           {/* Category and Title */}
           <div className="flex items-center gap-4">
             <span className="bg-blue-400 px-4 py-2 text-white rounded-lg text-sm font-bold uppercase tracking-tight">
-              {article?.tags?.at(0) || "Technology"}
+              {article?.categoryName || "Technology"}
             </span>
           </div>
           <h1 className="mt-4 text-4xl font-semibold text-[#161616">
@@ -84,7 +85,7 @@ function NewsPage({ article = [], user = [], articles = [] }) {
 
             <div className="flex items-center gap-2">
               <FaRegClock size={16} />
-              <span>{article.readTime || "5 Min Read"}</span>
+              <span>{article.readingTime + " " + "Min read"}</span>
             </div>
           </div>
 

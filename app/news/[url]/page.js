@@ -1,16 +1,15 @@
-import Header from "@/app/_components/Header";
 import NewsPage from "@/app/_components/NewsPage";
 import Spinner from "@/app/_components/Spinner";
 import {
+  getAllCategory,
   getArticlesBasedOnSlug,
   getFilteredArticles,
   getUserById,
 } from "@/app/_lib/data-service";
 import NotFound from "@/app/not-found";
 import { Suspense } from "react";
-export const dynamic = 'force-dynamic'; // Mark the page as dynamic
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
 // export const revalidate = 3600;  // Cache expires after 1 hour
-
 
 async function page({ params }) {
   const { url } = params;
@@ -18,7 +17,17 @@ async function page({ params }) {
   try {
     // Fetch article based on slug (url)
     const { article } = await getArticlesBasedOnSlug(url);
+    const { categories } = await getAllCategory();
 
+    const matchedCategory = categories.find(
+      (cat) => cat._id === article.categories
+    );
+
+    const articleWithCategory = {
+      ...article,
+      categoryName: matchedCategory ? matchedCategory.name : "unknown",
+    };
+    
     if (!article) {
       console.error("Article not found for URL:", url);
       return <NotFound />;
@@ -43,7 +52,7 @@ async function page({ params }) {
         {/* Suspense for async loading of the NewsPage component */}
         <Suspense fallback={<Spinner />}>
           <NewsPage
-            article={article}
+            article={articleWithCategory}
             user={user || null} // Pass `null` if user not found
             articles={articles || []} // Pass an empty array if no related articles
           />

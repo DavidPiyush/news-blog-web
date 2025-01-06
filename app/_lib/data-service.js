@@ -186,8 +186,7 @@ export async function getFilteredArticles(filter) {
 
     // Filter articles based on the specified conditions
     const filteredArticles = articles.filter(
-      (article) => article.status === "published"
-      //&& article.isApproved === true
+      (article) => article.status === "published" && article.isApproved === true
       // article.isDeleted === false
     );
 
