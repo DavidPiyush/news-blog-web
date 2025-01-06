@@ -1,16 +1,11 @@
+import DeleteArticle from "@/app/_components/DeleteArticle";
 import SubmitButton from "@/app/_components/SubmitButton";
-import { postDelete, postPublished } from "@/app/_lib/actions";
+import { postPublished } from "@/app/_lib/actions";
 import { getAllArticle, getAllCategory } from "@/app/_lib/data-service";
 import Link from "next/link";
-import {
-  FaCheckCircle,
-  FaEdit,
-  FaRegEyeSlash,
-  FaTrashAlt,
-} from "react-icons/fa";
+import { FaCheckCircle, FaEdit, FaRegEyeSlash } from "react-icons/fa";
 
 export const dynamic = "force-dynamic"; // Mark the page as dynamic
-
 export const revalidate = 0;
 
 export const metadata = {
@@ -21,16 +16,20 @@ async function page() {
   const { articles } = await getAllArticle();
   const { categories } = await getAllCategory();
 
+  console.log(categories);
+
   const enrichedArticles = articles.map((article) => {
-    const matchedCategory = categories.find(
-      (category) => category._id === article.categories
-    );
+    const matchedCategory = categories.find((category) => {
+      return category._id === article.categories;
+    });
+
     return {
       ...article,
       category: matchedCategory ? matchedCategory.name : "Unknown",
     };
   });
 
+  // console.log(enrichedArticles);
   return (
     <div className="bg-white min-h-screen py-8">
       <div className="max-w-screen-xl mx-auto px-6">
@@ -127,20 +126,7 @@ async function page() {
                         <FaEdit className="inline mr-1" />
                         Edit
                       </SubmitButton>
-                      <form action={postDelete}>
-                        <input
-                          name="id"
-                          defaultValue={post._id}
-                          className="hidden"
-                        />
-                        <SubmitButton
-                          pendingLabel="Deleting..."
-                          className="bg-red-600 hover:bg-red-700 text-white rounded-lg px-3 py-2 text-sm"
-                        >
-                          <FaTrashAlt className="inline mr-1" />
-                          Delete
-                        </SubmitButton>
-                      </form>
+                      <DeleteArticle articleId={post._id} />
 
                       <form action={postPublished}>
                         <input

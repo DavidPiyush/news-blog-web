@@ -6,8 +6,7 @@ import { FaEdit } from "react-icons/fa";
 import { useState } from "react";
 import SubmitButton from "./SubmitButton";
 import { createPost } from "../_lib/actions";
-
-
+import toast from "react-hot-toast";
 
 function EditorContentPage({ userID, categories }) {
   const [coverImage, setCoverImage] = useState(null);
@@ -17,6 +16,7 @@ function EditorContentPage({ userID, categories }) {
   const [publishedAt, setPublishedAt] = useState(
     new Date().toISOString().split("T")[0]
   );
+
   const [publishTime, setPublishTime] = useState("12:00");
 
   const handleImageUpload = (result) => {
@@ -35,27 +35,19 @@ function EditorContentPage({ userID, categories }) {
   const inputClass =
     "px-5 py-3 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-400 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   // Handle post submission logic here
-  //   const formData = new FormData(event.target);
-    
-  //   console.log(formData)
-  //   // Assuming createPost is an async function that handles the post submission
-  //   try {
-  //     // await createPost(postData);
-  //     toast.success("Article submitted successfully!"); // Show success toast
-  //   } catch (error) {
-  //     toast.error("Failed to submit the article. Please try again.");
-  //   }
-  // };
-
   return (
     <div className="rounded-xl w-full max-w-5xl p-8 bg-white text-gray-800  ">
       <h1 className="text-4xl font-bold text-gray-800  mb-6 text-center">
         Create News Article
       </h1>
-      <form className="space-y-6" action={createPost}>
+      <form
+        className="space-y-6"
+        action={async (formData) => {
+          const { success, message } = await createPost(formData);
+          if (success) toast.success(message);
+          if (!success) toast.error("Failed to create the article");
+        }}
+      >
         {/* Send the user id to populate user post */}
         <input
           type="text"
@@ -136,7 +128,6 @@ function EditorContentPage({ userID, categories }) {
             className={inputClass}
             name="tags"
             placeholder="Enter comma-separated tags"
-          
           />
           <small className="text-gray-500 block mt-2">
             Separate tags with commas (e.g., News, Technology, Sports)
@@ -152,7 +143,6 @@ function EditorContentPage({ userID, categories }) {
             className={inputClass}
             name="relatedPosts"
             placeholder="Enter related post links"
-           
           />
         </div>
 
@@ -281,7 +271,11 @@ function EditorContentPage({ userID, categories }) {
         </div>
 
         {/* Submit Button */}
-        <SubmitButton pendingLabel={"create new article..."} > Create a article </SubmitButton>
+
+        <SubmitButton pendingLabel={"create new article..."}>
+          {" "}
+          Create a article{" "}
+        </SubmitButton>
       </form>
     </div>
   );

@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import {
-  CreateArticle,
   CreateCategory,
   deleteArticle,
   deleteCategory,
@@ -15,6 +14,9 @@ import {
 import slugify from "slugify";
 import { parse } from "date-fns";
 import { Types } from "mongoose";
+import { connectToDB } from "./connectDB";
+import Article from "@/models/ArticleModel";
+import User from "@/models/UserModel";
 
 export async function updateProfile(formData) {
   try {
@@ -56,16 +58,13 @@ export async function createPost(formData) {
     if (!id) throw new Error("User ID is required.");
     if (!category) throw new Error("Category is required.");
 
+    const { role } = await User.findById(id);
+
     const combinedDateTime = `${
       year || new Date().toISOString().split("T")[0]
     }T${publishTime || new Date().toTimeString().split(" ")[0]}`;
 
     const mongoDate = new Date(combinedDateTime);
-
-    // Validate if the date is correct
-    if (isNaN(mongoDate)) {
-      throw new Error("Invalid date or time format.");
-    }
 
     // Validate if the date is correct
     if (isNaN(mongoDate)) {
@@ -109,13 +108,16 @@ export async function createPost(formData) {
     updateData.author = new Types.ObjectId(id);
     updateData.publishedAt = mongoDate;
 
-    // Call the CreateArticle function to insert the post into the database
+    if (role == "admin") updateData.isApproved = true;
 
-    await CreateArticle(updateData);
+    await connectToDB();
+    const newArticle = new Article(updateData);
+    await newArticle.save();
+    // await CreateArticle(updateData);
 
     revalidatePath("/dashboard");
+    return { success: true, message: "Article created sucessfully!" };
   } catch (error) {
-    console.error("Error creating the article:", error);
     throw new Error("Failed to create the article.");
   }
 }
@@ -132,11 +134,20 @@ export async function postApproval(formData) {
 
     const approvalStatus = isApproved === "true";
 
-    await UpdateArticle(id, {
-      isApproved: approvalStatus,
-    });
+    // await UpdateArticle(id, {
+    //   isApproved: approvalStatus,
+    // });
 
+    await Article.findByIdAndDelete(
+      id,
+      { isApproved: approvalStatus },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     revalidatePath("/dashboard");
+    return { success: true };
   } catch (error) {
     console.error("Error during approval:", error);
     throw new Error("Failed to update article approval status");
@@ -150,14 +161,13 @@ export async function postDelete(formData) {
       throw new Error("Article ID is missing in the form data.");
     }
 
-    await deleteArticle(id);
-
+    await Article.findOneAndDelete(id);
     // Revalidate paths to update the UI
 
-    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/content/manage");
   } catch (error) {
     console.error("Error in postDelete:", error);
-    // Optionally, handle the error (e.g., show a toast notification)
+    throw new Error("Failed to delete article");
   }
 }
 
@@ -178,7 +188,11 @@ export async function postPublished(formData) {
     };
 
     // Update the article
-    await UpdateArticle(id, updateData);
+
+    await Article.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
     revalidatePath("/dashboard");
 
