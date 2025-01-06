@@ -51,11 +51,11 @@ export async function updateProfile(formData) {
 
 export async function createPost(formData) {
   try {
-    const id = formData.get("userID").trim();
+    const id = formData.get("userID")?.trim();
     const category = formData.get("category");
     const year = formData.get("publishedYear");
     const publishTime = formData.get("publishTime");
-    const content = formData.get("content")
+    const content = formData.get("content");
 
     if (!id) throw new Error("User ID is required.");
     if (!category) throw new Error("Category is required.");
@@ -65,19 +65,14 @@ export async function createPost(formData) {
     const combinedDateTime = `${
       year || new Date().toISOString().split("T")[0]
     }T${publishTime || new Date().toTimeString().split(" ")[0]}`;
-
     const mongoDate = new Date(combinedDateTime);
 
-    // Validate if the date is correct
     if (isNaN(mongoDate)) {
       throw new Error("Invalid date or time format.");
     }
 
-    // Prepare the data for update
     const updateData = {};
-
     formData.forEach((value, key) => {
-      // Exclude certain fields from the update
       if (
         value &&
         key !== "userID" &&
@@ -89,12 +84,10 @@ export async function createPost(formData) {
       }
     });
 
-    // Check if there's any valid data to update
     if (Object.keys(updateData).length === 0) {
       throw new Error("No valid fields to update.");
     }
 
-    // Process the category and slug
     const categoryParts = category.split("%");
     const categoryId = categoryParts[0].trim();
 
@@ -104,27 +97,27 @@ export async function createPost(formData) {
 
     updateData.categories = new Types.ObjectId(categoryId);
 
-    updateData.slug = slugify(updateData.title.trim());
+    if (!updateData.title) {
+      throw new Error("Title is required to generate a slug.");
+    }
 
-    // Add additional fields
+    updateData.slug = slugify(updateData.title.trim());
     updateData.author = new Types.ObjectId(id);
     updateData.publishedAt = mongoDate;
 
-    const readingTime = calculateReadingTimeFromHTML(content)
-
+    const readingTime = calculateReadingTimeFromHTML(content || "");
     updateData.readingTime = readingTime.readingTimeMinutes;
 
-    if (role == "admin") updateData.isApproved = true;
+    if (role === "admin") updateData.isApproved = true;
 
     await connectToDB();
     const newArticle = new Article(updateData);
-     await newArticle.save();
-    // await CreateArticle(updateData);
+    await newArticle.save();
 
     revalidatePath("/dashboard");
-    return {success: true };
+    return { success: true };
   } catch (error) {
-    throw new Error("Failed to create the article.");
+    throw new Error(error.message || "Failed to create the article.");
   }
 }
 

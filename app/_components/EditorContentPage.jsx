@@ -46,9 +46,14 @@ function EditorContentPage({ userID, categories }) {
           try {
             const { success } = await createPost(formData);
 
-            if (success) toast.success("Article created sucessfully!");
+            if (success) {
+              toast.success("Article created successfully!");
+            }
           } catch (error) {
-            toast.error(error);
+            // Ensure error is a string before passing it to toast.error
+            const errorMessage =
+              error.message || "An error occurred while creating the article.";
+            toast.error(errorMessage);
           }
         }}
       >
