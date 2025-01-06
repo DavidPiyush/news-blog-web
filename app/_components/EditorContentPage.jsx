@@ -27,25 +27,7 @@ function EditorContentPage({ userID, categories }) {
     setContent(htmlContent);
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault(); // Prevent default form submission behavior
-
-  //   const formData = new FormData(e.target);
-  //   formData.append("content", content);
-
-  //   console.log(Object.fromEntries(formData));
-  //   try {
-  //     const response = await CreateArticle(Object.fromEntries(formData));
-  //     if (response?.success) {
-  //       toast.success("Article created successfully!");
-  //     } else {
-  //       toast.error("Failed to create the article.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //     toast.error("An error occurred while creating the article.");
-  //   }
-  // };
+  
 
   const inputClass =
     "px-5 py-3 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-400 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";

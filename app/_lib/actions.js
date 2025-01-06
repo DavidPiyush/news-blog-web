@@ -111,6 +111,8 @@ export async function createPost(formData) {
 
     if (role === "admin") updateData.isApproved = true;
 
+    console.log(updateData);
+
     CreateArticle(updateData);
 
     revalidatePath("/");
