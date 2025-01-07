@@ -2,23 +2,18 @@
 const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 import { revalidatePath } from "next/cache";
 import {
-  CreateArticle,
   CreateCategory,
-  deleteArticle,
   deleteCategory,
   deleteUser,
-  getUser,
   UpdateArticle,
   UpdateCategory,
   updateUser,
 } from "./data-service";
 import slugify from "slugify";
-import { parse } from "date-fns";
 import { Types } from "mongoose";
 import { connectToDB } from "./connectDB";
 import Article from "@/models/ArticleModel";
-import User from "@/models/UserModel";
-import { calculateReadingTimeFromHTML } from "./helper";
+
 
 export async function updateProfile(formData) {
   try {
@@ -39,7 +34,7 @@ export async function updateProfile(formData) {
     await updateUser(id, updateData);
 
    
-    revalidatePath("/dashboard/profile",'page');
+    
     revalidatePath("/dashboard/profile/setting",'page');
 
     return { success: true };
@@ -91,7 +86,7 @@ export async function createPost(articleData, formData) {
     //   );
     // }
 
-    revalidatePath("/dashboard/content/manage", "page");
+    revalidatePath("/dashboard/content/article", "page");
 
     return {
       message: "Article created successfully",
