@@ -56,12 +56,6 @@ const articleSchema = new mongoose.Schema(
       default: 0, // Number of likes on the article
       min: 0,
     },
-    comments: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "Comment",
-      },
-    ],
     isFeatured: {
       type: Boolean,
       default: false, // Marks the article as featured

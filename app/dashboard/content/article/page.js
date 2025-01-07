@@ -13,7 +13,7 @@ async function page() {
 
   return (
     <div className="p-8 min-h-screen">
-      <EditorContentPage userID={user._id} categories={categories} />
+      <EditorContentPage userID={user._id} categories={categories} role={user.role} />
     </div>
   );
 }

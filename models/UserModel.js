@@ -66,8 +66,7 @@ const userSchema = new mongoose.Schema(
       of: String,
       default: {}, // Default value to prevent undefined
     },
-    articles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Article" }],
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+  
     isActive: { type: Boolean, default: true },
     isVerified: { type: Boolean, default: false },
     isDeleted: {

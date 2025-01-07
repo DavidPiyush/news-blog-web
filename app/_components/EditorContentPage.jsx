@@ -8,12 +8,14 @@ import SubmitButton from "./SubmitButton";
 import { createPost } from "../_lib/actions";
 import toast from "react-hot-toast";
 import { CreateArticle } from "../_lib/data-service";
+import { calculateReadingTimeFromHTML } from "../_lib/helper";
+import { Types } from "mongoose";
 
-function EditorContentPage({ userID, categories }) {
+function EditorContentPage({ userID, categories, role }) {
   const [coverImage, setCoverImage] = useState(null);
   const [content, setContent] = useState("");
   const [isScheduled, setIsScheduled] = useState(false);
-  const [publishedAt, setPublishedAt] = useState(
+  const [publishedYear, setPublishedYear] = useState(
     new Date().toISOString().split("T")[0]
   );
   const [publishTime, setPublishTime] = useState("12:00");
@@ -27,6 +29,28 @@ function EditorContentPage({ userID, categories }) {
     setContent(htmlContent);
   };
 
+  const combinedDateTime = `${
+    publishedYear || new Date().toISOString().split("T")[0]
+  }T${publishTime || new Date().toTimeString().split(" ")[0]}`;
+  const mongoDate = new Date(combinedDateTime);
+
+  if (isNaN(mongoDate)) {
+    throw new Error("Invalid date or time format.");
+  }
+
+  const readingTime = calculateReadingTimeFromHTML(content || "");
+  const articleData = {
+    isApproved: role === "admin" ? true : false,
+    author: new Types.ObjectId(userID), // MongoDB ObjectId
+    content,
+    coverImage: coverImage === null ? "" : coverImage,
+    readingTime: readingTime.readingTimeMinutes,
+    publishedAt: mongoDate, // MongoDB Date
+  };
+
+
+  const createPostWithData = createPost.bind(null, articleData);
+
   const inputClass =
     "px-5 py-3 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-400 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
@@ -38,9 +62,10 @@ function EditorContentPage({ userID, categories }) {
       <form
         className="space-y-6"
         action={async (formData) => {
-          const response = await createPost(formData);
-          console.log(response, "this from Editor page");
-          if (response && response.article) {
+          // await createPostWithData(formData);
+          const response = await createPostWithData(formData);
+          
+          if (Number(response.statusCode) == 201) {
             toast.success(response.message || "Article created successfully!");
           } else {
             toast.error(response.message || "Failed to create the article.");
@@ -48,7 +73,7 @@ function EditorContentPage({ userID, categories }) {
         }}
       >
         {/* User ID */}
-        <input type="hidden" name="userID" defaultValue={userID} />
+        {/* <input type="hidden" name="userID" defaultValue={userID} /> */}
 
         {/* Title */}
         <div>
@@ -92,7 +117,7 @@ function EditorContentPage({ userID, categories }) {
           <label className="text-lg font-semibold text-gray-700">
             Category
           </label>
-          <select className={inputClass} name="category" required>
+          <select className={inputClass} name="categories" required>
             <option value="">Select a category</option>
             {categories.map((category) => (
               <option key={category._id} value={category._id}>
@@ -122,7 +147,7 @@ function EditorContentPage({ userID, categories }) {
             Image Gallery
           </label>
           <div className="relative group">
-            <input type="hidden" name="coverImage" defaultValue={coverImage} />
+            {/* <input type="hidden" name="coverImage" defaultValue={coverImage} /> */}
             <Image
               src={coverImage || "/default-image.jpg"}
               alt="Cover"
@@ -150,7 +175,6 @@ function EditorContentPage({ userID, categories }) {
         <div>
           <label className="text-lg font-semibold text-gray-700">Content</label>
           <QuillEditor onChange={handleEditorChange} />
-          <input type="hidden" name="content" value={content} />
         </div>
 
         {/* Feature Checkbox */}
@@ -185,9 +209,9 @@ function EditorContentPage({ userID, categories }) {
             </label>
             <input
               type="date"
-              value={publishedAt}
+              value={publishedYear}
               name="publishedAt"
-              onChange={(e) => setPublishedAt(e.target.value)}
+              onChange={(e) => setPublishedYear(e.target.value)}
               className={inputClass}
             />
             <label className="text-lg font-semibold text-gray-700 mt-4">

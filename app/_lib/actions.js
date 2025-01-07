@@ -50,85 +50,54 @@ export async function updateProfile(formData) {
   }
 }
 
-export async function createPost(formData) {
+// {id,role,categoryId,publishedDate,title,content,subTitle,isFeatured,isApproved,summary ,slug,readingTime,tags,coverImage}
+export async function createPost(articleData, formData) {
   try {
-    const id = formData.get("userID")?.trim();
-    const category = formData.get("category");
-    const year = formData.get("publishedYear");
-    const publishTime = formData.get("publishTime");
-    const content = formData.get("content");
+    const { title, subTitle, summary, categories, tags, status, isFeatured } =
+      Object.fromEntries(formData.entries());
 
-    if (!id) throw new Error("User ID is required.");
-    if (!category) throw new Error("Category is required.");
+    const newArticle = {
+      ...articleData,
+      title,
+      slug: slugify(title.trim()),
+      subTitle,
+      summary,
+      categories: new Types.ObjectId(categories).toString(), // Convert ObjectId to string
+      tags: tags.split(",").map((tag) => tag.trim()) || [],
+      status: status || "draft",
+      isFeatured: isFeatured || false,
+      views: 0,
+      likes: 0,
+    };
 
-    const { role } = await User.findById(id);
+    connectToDB();
 
-    const combinedDateTime = `${
-      year || new Date().toISOString().split("T")[0]
-    }T${publishTime || new Date().toTimeString().split(" ")[0]}`;
-    const mongoDate = new Date(combinedDateTime);
+    const article = await new Article(newArticle);
 
-    if (isNaN(mongoDate)) {
-      throw new Error("Invalid date or time format.");
-    }
+    await article.save();
+    console.log(article);
 
-    const updateData = {};
-    formData.forEach((value, key) => {
-      if (
-        value &&
-        key !== "userID" &&
-        key !== "category" &&
-        key !== "publishedYear" &&
-        key !== "publishTime"
-      ) {
-        updateData[key] = value;
-      }
-    });
+    // const response = await fetch(`${baseUrl}/api/articles/create`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(newD),
+    // });
 
-    if (Object.keys(updateData).length === 0) {
-      throw new Error("No valid fields to update.");
-    }
-
-    const categoryParts = category.split("%");
-    const categoryId = categoryParts[0].trim();
-
-    if (!Types.ObjectId.isValid(categoryId)) {
-      throw new Error("Invalid category ID.");
-    }
-
-    updateData.categories = new Types.ObjectId(categoryId);
-
-    if (!updateData.title) {
-      throw new Error("Title is required to generate a slug.");
-    }
-
-    updateData.slug = slugify(updateData.title.trim());
-    updateData.author = new Types.ObjectId(id);
-    updateData.publishedAt = mongoDate;
-
-    const readingTime = calculateReadingTimeFromHTML(content || "");
-    updateData.readingTime = readingTime.readingTimeMinutes;
-
-    if (role === "admin") updateData.isApproved = true;
-
-    const response = await fetch(`${baseUrl}/api/articles/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updateData),
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to create article: ${response.status} ${response.statusText}`
-      );
-    }
+    // if (!response.ok) {
+    //   throw new Error(
+    //     `Failed to create article: ${response.status} ${response.statusText}`
+    //   );
+    // }
 
     revalidatePath("/");
     revalidatePath("/dashboard");
 
-    return response.json();
+    return {
+      message: "Article created successfully",
+      statusCode: 201,
+    };
   } catch (error) {
     throw new Error(error.message || "Failed to create the article.");
   }
