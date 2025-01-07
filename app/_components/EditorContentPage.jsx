@@ -48,7 +48,6 @@ function EditorContentPage({ userID, categories, role }) {
     publishedAt: mongoDate, // MongoDB Date
   };
 
-
   const createPostWithData = createPost.bind(null, articleData);
 
   const inputClass =
@@ -64,7 +63,7 @@ function EditorContentPage({ userID, categories, role }) {
         action={async (formData) => {
           // await createPostWithData(formData);
           const response = await createPostWithData(formData);
-          
+
           if (Number(response.statusCode) == 201) {
             toast.success(response.message || "Article created successfully!");
           } else {

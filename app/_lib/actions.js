@@ -59,6 +59,7 @@ export async function createPost(articleData, formData) {
     const newArticle = {
       ...articleData,
       title,
+
       slug: slugify(title.trim()),
       subTitle,
       summary,
@@ -93,6 +94,8 @@ export async function createPost(articleData, formData) {
 
     revalidatePath("/");
     revalidatePath("/dashboard");
+    revalidatePath("/dashboard/content/manage");
+    revalidatePath("/dashboard/setting/approval");
 
     return {
       message: "Article created successfully",
