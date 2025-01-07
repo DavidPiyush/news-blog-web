@@ -66,7 +66,7 @@ const userSchema = new mongoose.Schema(
       of: String,
       default: {}, // Default value to prevent undefined
     },
-  
+
     isActive: { type: Boolean, default: true },
     isVerified: { type: Boolean, default: false },
     isDeleted: {
@@ -81,4 +81,5 @@ const userSchema = new mongoose.Schema(
 
 // Model Creation
 const User = mongoose.models.User || mongoose.model("User", userSchema);
+
 export default User;

@@ -5,7 +5,6 @@ import {
   CreateCategory,
   deleteCategory,
   deleteUser,
-  UpdateArticle,
   UpdateCategory,
   updateUser,
 } from "./data-service";
@@ -13,6 +12,7 @@ import slugify from "slugify";
 import { Types } from "mongoose";
 import { connectToDB } from "./connectDB";
 import Article from "@/models/ArticleModel";
+import Notification from "@/models/NotificationModel";
 
 export async function updateProfile(formData) {
   try {
@@ -29,9 +29,18 @@ export async function updateProfile(formData) {
     if (Object.keys(updateData).length === 0) {
       throw new Error("No valid fields to update.");
     }
+    await connectToDB();
 
     await updateUser(id, updateData);
 
+   const newNotification = new Notification({
+     userId: new Types.ObjectId(id), // Store as ObjectId (no need to call .toString() unless you need a string)
+     message: "Your profile is successfully updated",
+     time: new Date(), // This will store the current date and time
+   });
+
+
+    await newNotification.save();
     revalidatePath("/dashboard/profile/setting", "page");
 
     return { success: true };
@@ -149,7 +158,8 @@ export async function updatePost(articleData, formData) {
       throw new Error("Article not found or update failed.");
     }
 
-    return {success:true}; // Return the updated article
+    revalidatePath("/dashboard/content/manage");
+    return { success: true }; // Return the updated article
   } catch (error) {
     console.error("Error updating article:", error);
     throw new Error("Failed to update the article.");
@@ -176,7 +186,7 @@ export async function postApproval(formData) {
     );
 
     revalidatePath("/dashboard/setting/approval", "page");
-    return { success: true, };
+    return { success: true };
   } catch (error) {
     console.error("Error during approval:", error);
     throw new Error("Failed to update article approval status");

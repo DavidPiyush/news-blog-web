@@ -1,4 +1,8 @@
 // Get all users from the database
+
+import WebsiteSetting from "@/models/WebsiteModel";
+import { connectToDB } from "./connectDB";
+
 // const baseUrl = process.env.NEXTAUTH_URL || "https://news-blog-web.vercel.app";
 const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
@@ -143,16 +147,16 @@ export async function deleteUser(id) {
 }
 
 // fetch all articles from database
-export async function getAllArticle(filter) {
+export async function getAllArticle() {
   try {
-    const response = await fetch(`${baseUrl}/api/articles?${filter}`, {
+    const response = await fetch(`${baseUrl}/api/articles`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    if (!response.ok) {
+    if (!response) {
       throw new Error(
         `Failed to fetch user: ${response.status} ${response.statusText}`
       );
@@ -167,27 +171,26 @@ export async function getAllArticle(filter) {
   }
 }
 
-export async function getFilteredArticles(filter) {
+export async function getFilteredArticles() {
   try {
-    const response = await fetch(`${baseUrl}/api/articles?${filter}`, {
+    const response = await fetch(`${baseUrl}/api/articles`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    if (!response.ok) {
+    if (!response) {
       throw new Error(
-        `Failed to fetch articles: ${response.status} ${response.statusText}`
+        `Failed to fetch user: ${response.status} ${response.statusText}`
       );
     }
 
     const { articles } = await response.json();
 
     // Filter articles based on the specified conditions
-    const filteredArticles = articles.filter(
+    const filteredArticles = articles?.filter(
       (article) => article.status === "published" && article.isApproved === true
-      // article.isDeleted === false
     );
 
     return filteredArticles;
@@ -373,5 +376,18 @@ export async function deleteCategory(id) {
   } catch (error) {
     console.error("Error deleting category:", error);
     throw error;
+  }
+}
+
+export async function websiteSettingData() {
+  try {
+    await connectToDB();
+    const settings = await WebsiteSetting.findOne();
+
+    // Return the settings as an array
+    return settings;
+  } catch (error) {
+    console.error("Error fetching website settings:", error);
+    throw new Error("Failed to fetch website settings!");
   }
 }

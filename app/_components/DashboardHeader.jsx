@@ -8,6 +8,7 @@ import ProfileDialogBox from "./ProfileDialogBox";
 
 import { getServerSession } from "next-auth";
 import NotificationDropdown from "./NotificationDropdown";
+import Link from "next/link";
 
 async function DashboardHeader() {
   const session = await getServerSession();
@@ -17,9 +18,9 @@ async function DashboardHeader() {
     <div className="h-16 flex items-center justify-between px-6  text-gray-800 shadow-md z-50 sticky top-0">
       {/* Left Section */}
       <div className="flex items-center space-x-4">
-        <div className="text-xl font-semibold">
+        <Link href={'/dashboard'} className="text-xl font-semibold">
           <span className="text-indigo-500 capitalize">{user.role}</span> Panel
-        </div>
+        </Link>
         <div className="hidden lg:flex text-sm text-gray-600 px-4">
           <span className="text-lg font-medium capitalize">
             {getGreeting()},{getRandomEmoji()} {user.role}
