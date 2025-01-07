@@ -38,10 +38,9 @@ export async function updateProfile(formData) {
 
     await updateUser(id, updateData);
 
-    revalidatePath("/");
-    revalidatePath("/dashboard");
-    revalidatePath("/dashboard/profile");
-    revalidatePath("/dashboard/profile/setting");
+   
+    revalidatePath("/dashboard/profile",'page');
+    revalidatePath("/dashboard/profile/setting",'page');
 
     return { success: true };
   } catch (error) {
@@ -92,9 +91,7 @@ export async function createPost(articleData, formData) {
     //   );
     // }
 
-   
-    revalidatePath("/dashboard/content/manage");
-    revalidatePath("/dashboard/setting/approval");
+    revalidatePath("/dashboard/content/manage", "page");
 
     return {
       message: "Article created successfully",
@@ -121,7 +118,7 @@ export async function postApproval(formData) {
       isApproved: approvalStatus,
     });
 
-    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/setting/approval", "page");
     return { success: true };
   } catch (error) {
     console.error("Error during approval:", error);
@@ -140,7 +137,7 @@ export async function postDelete(formData) {
 
     await Article.findByIdAndDelete(id);
 
-    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/content/manage", "page");
   } catch (error) {
     console.error("Error in postDelete:", error);
     throw new Error("Failed to delete article");
@@ -163,17 +160,16 @@ export async function postPublished(formData) {
       status: status === "draft" ? "published" : "draft",
     };
 
-    connectToDB()
+    connectToDB();
     // Update the article
 
-    await Article.findByIdAndUpdate(id, updateData,{
-      new:true,runValidators:true
+    await Article.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
     });
 
-    
+    revalidatePath("/dashboard/content/manage",'page');
 
-    revalidatePath("/dashboard/content/manage");
-    
     return { success: true };
   } catch (error) {
     throw new Error("Failed to update article approval status.");
@@ -198,7 +194,7 @@ export async function categoryCreate(formData) {
 
   await CreateCategory(categoryData);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/dashboard",'page');
 }
 
 export async function categoryEdit(formData) {
@@ -228,7 +224,7 @@ export async function categoryEdit(formData) {
     console.log(updatedData);
     await UpdateCategory(id, updatedData);
 
-    revalidatePath("/dashboard");
+    revalidatePath("/dashboard",'page');
 
     return { success: true, message: "Category updated successfully." };
   } catch (error) {
@@ -247,7 +243,7 @@ export async function categoryDelete(formData) {
 
     // Revalidate paths to update the UI
 
-    revalidatePath("/dashboard");
+    revalidatePath("/dashboard",'page');
   } catch (error) {
     console.error("Error in postDelete:", error);
     // Optionally, handle the error (e.g., show a toast notification)
@@ -271,7 +267,7 @@ export async function updateRoleByAdmin(formData) {
   // Update the article
   await updateUser(id, updateData);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/dashboard",'page');
 }
 export async function deleteUserByAdmin(formData) {
   const id = formData.get("id");
@@ -282,5 +278,5 @@ export async function deleteUserByAdmin(formData) {
 
   await deleteUser(id);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/dashboard",'page');
 }
