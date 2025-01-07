@@ -5,28 +5,12 @@ import { getAllArticle, getAllCategory } from "@/app/_lib/data-service";
 import Link from "next/link";
 import { FaCheckCircle, FaEdit, FaRegEyeSlash } from "react-icons/fa";
 
-// export const dynamic = "force-dynamic"; // Mark the page as dynamic
-// export const revalidate = 0;
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
+export const revalidate = 0;
 
 export const metadata = {
   title: "Manage Content",
 };
-
-export async function generateStaticParams() {
-  const { categories } = await getAllCategory();
-  const { articles } = await getAllArticle();
-
-  // Generate parameters for categories
-  const categoryParams = categories.map((cat) => ({
-    id: `category-${cat._id}`,
-  }));
-
-  // Generate parameters for articles
-  const articleParams = articles.map((art) => ({ id: `article-${art._id}` }));
-
-  // Combine both
-  return [...categoryParams, ...articleParams];
-}
 
 async function page() {
   const { articles } = await getAllArticle();
