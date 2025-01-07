@@ -1,5 +1,5 @@
 "use server";
-
+const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 import { revalidatePath } from "next/cache";
 import {
   CreateArticle,
@@ -111,13 +111,24 @@ export async function createPost(formData) {
 
     if (role === "admin") updateData.isApproved = true;
 
-    console.log(updateData);
+    const response = await fetch(`${baseUrl}/api/articles/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateData),
+    });
 
-    CreateArticle(updateData);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to create article: ${response.status} ${response.statusText}`
+      );
+    }
 
     revalidatePath("/");
     revalidatePath("/dashboard");
-    return { success: true };
+
+    return response.json();
   } catch (error) {
     throw new Error(error.message || "Failed to create the article.");
   }

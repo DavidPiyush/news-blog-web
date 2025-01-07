@@ -27,8 +27,6 @@ function EditorContentPage({ userID, categories }) {
     setContent(htmlContent);
   };
 
-  
-
   const inputClass =
     "px-5 py-3 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-400 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
@@ -41,10 +39,11 @@ function EditorContentPage({ userID, categories }) {
         className="space-y-6"
         action={async (formData) => {
           const response = await createPost(formData);
-          if (response?.success) {
-            toast.success("Article created successfully!");
+          console.log(response, "this from Editor page");
+          if (response && response.article) {
+            toast.success(response.message || "Article created successfully!");
           } else {
-            toast.error("Failed to create the article.");
+            toast.error(response.message || "Failed to create the article.");
           }
         }}
       >

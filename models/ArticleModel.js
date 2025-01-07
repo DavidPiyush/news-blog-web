@@ -18,7 +18,6 @@ const articleSchema = new mongoose.Schema(
 
     content: {
       type: String,
-      required: true, // Main content of the article
     },
     summary: {
       type: String,
