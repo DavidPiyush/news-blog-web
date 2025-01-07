@@ -92,8 +92,7 @@ export async function createPost(articleData, formData) {
     //   );
     // }
 
-    revalidatePath("/");
-    revalidatePath("/dashboard");
+   
     revalidatePath("/dashboard/content/manage");
     revalidatePath("/dashboard/setting/approval");
 
@@ -137,10 +136,11 @@ export async function postDelete(formData) {
       throw new Error("Article ID is missing in the form data.");
     }
 
-    await deleteArticle(id);
-    // Revalidate paths to update the UI
+    connectToDB();
 
-    revalidatePath("/dashboard/content/manage");
+    await Article.findByIdAndDelete(id);
+
+    revalidatePath("/dashboard");
   } catch (error) {
     console.error("Error in postDelete:", error);
     throw new Error("Failed to delete article");
@@ -163,17 +163,17 @@ export async function postPublished(formData) {
       status: status === "draft" ? "published" : "draft",
     };
 
+    connectToDB()
     // Update the article
 
-    await UpdateArticle(id, updateData);
+    await Article.findByIdAndUpdate(id, updateData,{
+      new:true,runValidators:true
+    });
 
-    // await Article.findByIdAndUpdate(id, updateData, {
-    //   new: true,
-    //   runValidators: true,
-    // });
+    
 
-    revalidatePath("/dashboard");
-
+    revalidatePath("/dashboard/content/manage");
+    
     return { success: true };
   } catch (error) {
     throw new Error("Failed to update article approval status.");

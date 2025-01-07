@@ -12,11 +12,7 @@ async function page({ searchParams }) {
   const { isApproved = "all", author = "", search = "" } = searchParams || {};
 
   // Fetch articles with filters applied
-  const { articles } = await getAllArticle({
-    isApproved,
-    author,
-    search,
-  });
+  const { articles } = await getAllArticle();
 
   return (
     <div className="p-8 min-h-screen bg-white text-black ">
