@@ -14,7 +14,6 @@ import { Types } from "mongoose";
 import { connectToDB } from "./connectDB";
 import Article from "@/models/ArticleModel";
 
-
 export async function updateProfile(formData) {
   try {
     const id = formData.get("_id");
@@ -33,9 +32,7 @@ export async function updateProfile(formData) {
 
     await updateUser(id, updateData);
 
-   
-    
-    revalidatePath("/dashboard/profile/setting",'page');
+    revalidatePath("/dashboard/profile/setting", "page");
 
     return { success: true };
   } catch (error) {
@@ -47,8 +44,16 @@ export async function updateProfile(formData) {
 // {id,role,categoryId,publishedDate,title,content,subTitle,isFeatured,isApproved,summary ,slug,readingTime,tags,coverImage}
 export async function createPost(articleData, formData) {
   try {
-    const { title, subTitle, summary, categories, tags, status, isFeatured } =
-      Object.fromEntries(formData.entries());
+    const {
+      title,
+      subTitle,
+      summary,
+      categories,
+      tags,
+      status,
+      isFeatured,
+      relatedPosts,
+    } = Object.fromEntries(formData.entries());
 
     const newArticle = {
       ...articleData,
@@ -63,9 +68,10 @@ export async function createPost(articleData, formData) {
       isFeatured: isFeatured || false,
       views: 0,
       likes: 0,
+      relatedPosts: relatedPosts.split(",").map((post) => post.trim()) || [],
     };
 
-    connectToDB();
+    await connectToDB();
 
     const article = await new Article(newArticle);
 
@@ -97,24 +103,80 @@ export async function createPost(articleData, formData) {
   }
 }
 
+// update full post
+
+export async function updatePost(articleData, formData) {
+  try {
+    // Extract and process form data
+    const { title, subTitle, categories, tags, isFeatured, relatedPosts } =
+      Object.fromEntries(formData.entries());
+
+    const newArticle = {
+      ...articleData,
+      title: title.trim(),
+      slug: slugify(title.trim(), { lower: true }), // Generate a slug
+      subTitle: subTitle.trim(),
+      categories: new Types.ObjectId(categories).toString(), // Convert ObjectId to string
+      tags: tags ? tags.split(",").map((tag) => tag.trim()) : [], // Split and trim tags
+      isFeatured: isFeatured === "true", // Convert to boolean
+      relatedPosts: relatedPosts
+        ? relatedPosts.split(",").map((post) => post.trim())
+        : [], // Split and trim related posts
+    };
+
+    // Connect to the database
+    await connectToDB();
+
+    // Update the article in the database
+    const updatedArticle = await Article.findByIdAndUpdate(
+      newArticle.id,
+      {
+        coverImage: newArticle.coverImage,
+        readingTime: newArticle.readingTime,
+        content: newArticle.content,
+        title: newArticle.title,
+        slug: newArticle.slug,
+        subTitle: newArticle.subTitle,
+        categories: newArticle.categories,
+        tags: newArticle.tags,
+        isFeatured: newArticle.isFeatured,
+        relatedPosts: newArticle.relatedPosts,
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedArticle) {
+      throw new Error("Article not found or update failed.");
+    }
+
+    return {success:true}; // Return the updated article
+  } catch (error) {
+    console.error("Error updating article:", error);
+    throw new Error("Failed to update the article.");
+  }
+}
+
 export async function postApproval(formData) {
   try {
     const id = formData.get("Id");
     const isApproved = formData.get("isApproved");
 
-    console.log(formData, id, isApproved);
     if (!id || !isApproved) {
       throw new Error("Missing required fields: articleId or isApproved");
     }
 
     const approvalStatus = isApproved === "true";
 
-    await UpdateArticle(id, {
-      isApproved: approvalStatus,
-    });
+    await connectToDB();
+
+    await Article.findByIdAndUpdate(
+      id,
+      { isApproved: approvalStatus },
+      { new: true, runValidators: true }
+    );
 
     revalidatePath("/dashboard/setting/approval", "page");
-    return { success: true };
+    return { success: true, };
   } catch (error) {
     console.error("Error during approval:", error);
     throw new Error("Failed to update article approval status");
@@ -128,7 +190,7 @@ export async function postDelete(formData) {
       throw new Error("Article ID is missing in the form data.");
     }
 
-    connectToDB();
+    await connectToDB();
 
     await Article.findByIdAndDelete(id);
 
@@ -155,7 +217,7 @@ export async function postPublished(formData) {
       status: status === "draft" ? "published" : "draft",
     };
 
-    connectToDB();
+    await connectToDB();
     // Update the article
 
     await Article.findByIdAndUpdate(id, updateData, {
@@ -163,7 +225,7 @@ export async function postPublished(formData) {
       runValidators: true,
     });
 
-    revalidatePath("/dashboard/content/manage",'page');
+    revalidatePath("/dashboard/content/manage", "page");
 
     return { success: true };
   } catch (error) {
@@ -189,7 +251,7 @@ export async function categoryCreate(formData) {
 
   await CreateCategory(categoryData);
 
-  revalidatePath("/dashboard",'page');
+  revalidatePath("/dashboard", "page");
 }
 
 export async function categoryEdit(formData) {
@@ -216,10 +278,9 @@ export async function categoryEdit(formData) {
       slug,
     };
 
-    console.log(updatedData);
     await UpdateCategory(id, updatedData);
 
-    revalidatePath("/dashboard",'page');
+    revalidatePath("/dashboard", "page");
 
     return { success: true, message: "Category updated successfully." };
   } catch (error) {
@@ -229,7 +290,7 @@ export async function categoryEdit(formData) {
 export async function categoryDelete(formData) {
   try {
     const id = formData.get("id");
-    console.log(id);
+
     if (!id) {
       throw new Error("Article ID is missing in the form data.");
     }
@@ -238,7 +299,7 @@ export async function categoryDelete(formData) {
 
     // Revalidate paths to update the UI
 
-    revalidatePath("/dashboard",'page');
+    revalidatePath("/dashboard", "page");
   } catch (error) {
     console.error("Error in postDelete:", error);
     // Optionally, handle the error (e.g., show a toast notification)
@@ -262,16 +323,16 @@ export async function updateRoleByAdmin(formData) {
   // Update the article
   await updateUser(id, updateData);
 
-  revalidatePath("/dashboard",'page');
+  revalidatePath("/dashboard", "page");
 }
 export async function deleteUserByAdmin(formData) {
   const id = formData.get("id");
-  console.log(id);
+
   if (!id) {
     throw new Error("Article ID is missing in the form data.");
   }
 
   await deleteUser(id);
 
-  revalidatePath("/dashboard",'page');
+  revalidatePath("/dashboard", "page");
 }

@@ -20,7 +20,7 @@ const modules = {
   ],
 };
 
-const QuillEditor = ({ onChange }) => {
+const QuillEditor = ({ onChange,defaultValue='' }) => {
   const handleChange = (content) => {
     onChange(content);
   };
@@ -30,6 +30,7 @@ const QuillEditor = ({ onChange }) => {
       theme="snow"
       modules={modules}
       onChange={handleChange}
+      defaultValue={defaultValue}
       className="bg-white shadow-md rounded-lg p-2"
     />
   );

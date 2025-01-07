@@ -120,10 +120,17 @@ async function page() {
                     <td className="px-6 py-4 text-gray-900">{post.category}</td>
                     <td className="px-6 py-4 text-gray-900">{post.views}</td>
                     <td className="px-6 py-4 flex space-x-2 items-center">
-                      <SubmitButton pendingLabel="Updating...">
-                        <FaEdit className="inline mr-1" />
-                        Edit
-                      </SubmitButton>
+                      <Link
+                        href={`/dashboard/content/editContent/${post._id}`}
+                        className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:bg-blue-700 focus:outline-none flex items-center justify-center transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:bg-blue-300 disabled:text-gray-500 
+      sm:px-8 md:px-6 sm:py-4 md:py-2  text-sm gap-1"
+                      >
+                        <span>
+                          <FaEdit />
+                        </span>
+                        <span> Edit</span>
+                      </Link>
+
                       <DeleteArticle articleId={post._id} />
 
                       <form action={postPublished}>
