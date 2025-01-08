@@ -1,7 +1,7 @@
 import ArticleApproved from "@/app/_components/ArticleApproved";
 import { getAllArticle } from "@/app/_lib/data-service";
 export const dynamic = "force-dynamic"; // Mark the page as dynamic
-export const revalidate = 0;
+// export const revalidate = 0;
 
 async function page({ searchParams }) {
   const { isApproved = "all", author = "", search = "" } = searchParams || {};

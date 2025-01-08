@@ -11,7 +11,7 @@ import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
 async function SubNavigation() {
   const articles = await getFilteredArticles();
   const { categories } = await getAllCategory();
-  if(articles) return
+  if(!articles) return
   return (
     <div className="border-b-2 h-16 border-gray-100 sticky top-0 bg-white z-50 shadow-sm">
       <nav className="max-w-7xl mx-auto h-14 flex items-center justify-between relative">

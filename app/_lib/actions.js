@@ -280,7 +280,7 @@ export async function postPublished(formData) {
       runValidators: true,
     });
 
-    revalidatePath("/dashboard/content/manage", "page");
+    revalidatePath("/dashboard/content/manage");
 
     return { success: true };
   } catch (error) {
