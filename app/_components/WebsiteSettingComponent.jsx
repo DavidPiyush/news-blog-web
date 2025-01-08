@@ -1,7 +1,7 @@
 "use client";
 
 import toast from "react-hot-toast";
-import { updateWebsiteSittings } from "../_lib/websiteActions";
+import { createWebsiteSittings, updateWebsiteSittings } from "../_lib/websiteActions";
 
 function WebsiteSettingComponent({
   id,

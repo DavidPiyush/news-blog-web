@@ -1,7 +1,12 @@
 import WebsiteSettingComponent from "@/app/_components/WebsiteSettingComponent";
+import { connectToDB } from "@/app/_lib/connectDB";
+import WebsiteSetting from "@/models/WebsiteModel";
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
+export const revalidate = 0;
 
 async function page() {
-  const data = await websiteSettingData();
+  await connectToDB();
+  const data = await WebsiteSetting.findOne();
   if (!data) {
     toast.error("Failed to fetch website settings.");
     return <div>Error: No data found</div>;

@@ -2,7 +2,7 @@ import SubmitButton from "@/app/_components/SubmitButton";
 import { updateUserSocialLinks } from "@/app/_lib/actions";
 import { getUser } from "@/app/_lib/data-service";
 import { getServerSession } from "next-auth";
-import toast from "react-hot-toast";
+
 
 async function Page() {
   const session = await getServerSession();
