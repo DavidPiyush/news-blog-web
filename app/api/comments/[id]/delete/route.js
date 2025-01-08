@@ -8,15 +8,7 @@ export const DELETE = async (req, context) => {
 
     const { id } = context.params;
 
-    const comment = await Comment.findById(id);
-
-    if (!comment) {
-      return NextResponse.json({ error: "Comment not found" }, { status: 404 });
-    }
-
-    // Soft delete the comment by setting isDeleted to true
-    comment.isDeleted = true;
-    await comment.save();
+    await Comment.findByIdAndDelete(id);
 
     return NextResponse.json(
       { message: "Comment deleted successfully" },

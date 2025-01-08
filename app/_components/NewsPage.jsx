@@ -3,7 +3,6 @@ import {
   FaRegCommentDots,
   FaEye,
   FaRegClock,
-  FaEllipsisH,
   FaTelegramPlane,
 } from "react-icons/fa";
 import { FaFacebookF, FaPinterest, FaTwitter } from "react-icons/fa6";
@@ -18,8 +17,9 @@ import SocailLinkBox from "./SocailLinkBox";
 import NewsLetter from "./NewsLetter";
 import AdsVerticalBig from "./AdsVertical";
 import DangerousSetHtml from "./DangerousSetHtml";
-function NewsPage({ article = [], user = [], articles = [] }) {
-  console.log(article);
+import CommentCard from "./CommentCard";
+function NewsPage({ article = [], user = [], articles = [],comments=[] }) {
+  
   return (
     <section className="mt-12 max-w-7xl mx-auto ">
       <div className="grid grid-cols-1 md:grid-cols-8 gap-10">
@@ -165,7 +165,8 @@ function NewsPage({ article = [], user = [], articles = [] }) {
               authorBio={user?.bio}
             />
             <RelatedPosts articles={articles} />
-            <CommentForm />
+            <CommentCard comments={comments} id ={article._id}/>
+            <CommentForm id={article._id} />
           </div>
         </div>
 

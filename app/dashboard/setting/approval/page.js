@@ -10,7 +10,7 @@ async function page({ searchParams }) {
   const { articles } = await getAllArticle();
   if (!articles.length) return;
    
-console.log(articles)
+
   return (
     <div className="p-8 min-h-screen bg-white text-black ">
       <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6 mt-6 ">

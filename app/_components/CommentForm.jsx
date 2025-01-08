@@ -1,7 +1,8 @@
-'use client'
+"use client";
+import axios from "axios";
 import React, { useState } from "react";
 
-const CommentForm = () => {
+const CommentForm = ({ id }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,9 +19,34 @@ const CommentForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Comment submitted:", formData);
+
+    const data = {
+      ...formData,
+      postId: id, // Assuming `id` is defined elsewhere
+    };
+
+    try {
+      const res = await axios.post("/api/comments/create", data); // Explicitly define POST method
+      console.log("Response:", res.data);
+
+      // Reset the form after successful submission
+      setFormData({
+        name: "",
+        email: "",
+        website: "",
+        comment: "",
+        saveInfo: false,
+      });
+
+      alert("Comment submitted successfully!"); // Optional feedback to the user
+    } catch (error) {
+      console.error(
+        "Error submitting comment:",
+        error.response?.data || error.message
+      );
+    }
   };
 
   return (

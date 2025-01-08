@@ -1,18 +1,31 @@
 import mongoose from "mongoose";
 
 const CommentSchema = new mongoose.Schema({
-  content: {
+  comment: {
     type: String,
-    required: [true, "Comment can not be empty!"],
+    required: [true, "Comment cannot be empty!"],
     trim: true,
   },
   approved: {
     type: Boolean,
     default: false,
   },
-  likes: {
-    type: Number,
-    default: 0,
+  postId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Article", // Assuming you're linking to the Article model
+    required: true, // Ensures every comment is linked to a post
+  },
+  website: {
+    type: String,
+  },
+  email: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  },
+  name: {
+    type: String,
   },
   createdAt: {
     type: Date,
@@ -24,13 +37,19 @@ const CommentSchema = new mongoose.Schema({
   },
   parentCommentId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Comment",
-    default: null,
+    ref: "Comment", // Links to the Comment model for replies
+    default: null, // If null, it's a root comment
   },
-  isDeleted: {
+  saveInfo: {
     type: Boolean,
     default: false,
   },
+});
+
+// Add a pre-save hook to update the `updatedAt` field whenever a comment is updated
+CommentSchema.pre("save", function (next) {
+  this.updatedAt = Date.now();
+  next();
 });
 
 const Comment =

@@ -1,6 +1,25 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { FaSearch, FaFilter, FaEye } from "react-icons/fa";
+
+// import { useEffect, useState } from "react";
+
+// export default function Home() {
+//   const [ip, setIp] = useState("");
+
+//   useEffect(() => {
+//     fetch("https://api.ipify.org?format=json")
+//       .then((response) => response.json())
+//       .then((data) => setIp(data.ip));
+//   }, []);
+
+//   return (
+//     <div>
+//       <h1>Your Public IP Address:</h1>
+//       <p>{ip}</p>
+//     </div>
+//   );
+// }
 
 const UserActivity = () => {
   const [activityLogs, setActivityLogs] = useState([

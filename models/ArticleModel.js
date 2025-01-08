@@ -48,7 +48,7 @@ const articleSchema = new mongoose.Schema(
     ],
     views: {
       type: Number,
-      default: 0, // Number of article views
+      default: 0, 
       min: 0,
     },
     likes: {

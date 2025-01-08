@@ -4,6 +4,8 @@ import Link from "next/link";
 import SubmitButton from "./SubmitButton";
 import { postApproval } from "../_lib/actions";
 import toast from "react-hot-toast";
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
+export const revalidate = 0;
 
 function ArticleApproved({ articles = [] }) {
   return (

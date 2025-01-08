@@ -10,6 +10,9 @@ export const GET = async () => {
     // Fetch all articles and populate author details
     const articles = await Article.find().populate("author");
 
+
+    
+
     // Return articles or an empty array if none found
     return NextResponse.json(
       {

@@ -6,36 +6,34 @@ export const PATCH = async (req, context) => {
   try {
     await connectToDB();
 
-    const { id } = await context.params;
-    const updateData = await req.json();
+    const { id } = context.params; // Extract the ID from params
 
-    // Find the comment by ID first
-    const comment = await Comment.findById(id);
+    const updateData = await req.json(); // Parse the request body
 
-    if (!comment) {
+    if (!id) {
+      return NextResponse.json(
+        { error: "Comment ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Find and update the comment in one step
+    const updatedComment = await Comment.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true } // Return the updated document and run validators
+    );
+
+    if (!updatedComment) {
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
     }
 
-    // Update fields that are allowed to be changed
-    if (updateData.content) comment.content = updateData.content;
-
-    if (updateData.approved !== undefined)
-      comment.approved = updateData.approved;
-
-    if (updateData.likes !== undefined) comment.likes = updateData.likes;
-
-    if (updateData.isDeleted !== undefined)
-      comment.isDeleted = updateData.isDeleted;
-
-    // Save the updated comment
-    await comment.save();
-
     return NextResponse.json(
-      { message: "Comment updated successfully", comment },
+      { message: "Comment updated successfully", comment: updatedComment },
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
+    console.error("Error updating comment:", error);
     return NextResponse.json(
       { error: "An error occurred while updating the comment" },
       { status: 500 }

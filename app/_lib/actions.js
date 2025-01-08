@@ -230,7 +230,7 @@ export async function postApproval(formData) {
       { new: true, runValidators: true }
     );
 
-    revalidatePath("/dashboard/setting/approval", "page");
+    revalidatePath("/dashboard/setting/approval");
     return { success: true };
   } catch (error) {
     console.error("Error during approval:", error);
@@ -249,7 +249,7 @@ export async function postDelete(formData) {
 
     await Article.findByIdAndDelete(id);
 
-    revalidatePath("/dashboard/content/manage", "page");
+    revalidatePath("/dashboard/content/manage");
   } catch (error) {
     console.error("Error in postDelete:", error);
     throw new Error("Failed to delete article");

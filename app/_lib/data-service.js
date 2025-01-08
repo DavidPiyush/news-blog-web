@@ -2,6 +2,7 @@
 
 import WebsiteSetting from "@/models/WebsiteModel";
 import { connectToDB } from "./connectDB";
+import Comment from "@/models/CommentModel";
 
 // const baseUrl = process.env.NEXTAUTH_URL || "https://news-blog-web.vercel.app";
 const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
@@ -389,5 +390,24 @@ export async function websiteSettingData() {
   } catch (error) {
     console.error("Error fetching website settings:", error);
     throw new Error("Failed to fetch website settings!");
+  }
+}
+
+// function to fetch comment based on article post
+
+export async function commentBasedOnPost(postId) {
+  try {
+    // Connect to the database
+    await connectToDB();
+
+    // Fetch comments for the given postId
+    const comments = await Comment.find({ postId })
+      .sort({ createdAt: -1 })
+      .lean(); // Sorting by newest first
+
+    return comments;
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw new Error("Unable to fetch comments.");
   }
 }
