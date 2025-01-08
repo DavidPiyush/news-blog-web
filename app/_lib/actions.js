@@ -13,6 +13,7 @@ import { Types } from "mongoose";
 import { connectToDB } from "./connectDB";
 import Article from "@/models/ArticleModel";
 import Notification from "@/models/NotificationModel";
+import User from "@/models/UserModel";
 
 export async function updateProfile(formData) {
   try {
@@ -33,12 +34,11 @@ export async function updateProfile(formData) {
 
     await updateUser(id, updateData);
 
-   const newNotification = new Notification({
-     userId: new Types.ObjectId(id), // Store as ObjectId (no need to call .toString() unless you need a string)
-     message: "Your profile is successfully updated",
-     time: new Date(), // This will store the current date and time
-   });
-
+    const newNotification = new Notification({
+      userId: new Types.ObjectId(id), // Store as ObjectId (no need to call .toString() unless you need a string)
+      message: "Your profile is successfully updated",
+      time: new Date(), // This will store the current date and time
+    });
 
     await newNotification.save();
     revalidatePath("/dashboard/profile/setting", "page");
@@ -50,6 +50,51 @@ export async function updateProfile(formData) {
   }
 }
 
+export async function updateUserSocialLinks(formData) {
+  // Destructure form data
+  const { id, facebook, instagram, twitter, linkedin, youtube } =
+    Object.fromEntries(formData.entries());
+
+  // Create the socialLinks object
+  const socialLinks = {
+    facebook,
+    instagram,
+    twitter,
+    linkedin,
+    youtube,
+  };
+
+
+  try {
+    // Connect to the database
+    await connectToDB();
+
+    // Update the user with the new socialLinks
+    const updatedUser = await User.findByIdAndUpdate(
+      id, // User ID
+      { $set: { socialLinks } }, // Update the socialLinks field
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      throw new Error("User not found");
+    }
+
+    const newNotification = new Notification({
+      userId: new Types.ObjectId(id),
+      message: "Social media links are added in your profile",
+      time: new Date(),
+    });
+
+    await newNotification.save();
+
+    revalidatePath('dashboard/setting/social')
+    return { success: true, message: "update is sucessfull" };
+  } catch (error) {
+    console.error("Error updating social links:", error);
+    return { success: false, error: error.message };
+  }
+}
 // {id,role,categoryId,publishedDate,title,content,subTitle,isFeatured,isApproved,summary ,slug,readingTime,tags,coverImage}
 export async function createPost(articleData, formData) {
   try {

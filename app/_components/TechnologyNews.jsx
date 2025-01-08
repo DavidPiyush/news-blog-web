@@ -4,6 +4,7 @@ import { FaBarsStaggered } from "react-icons/fa6";
 import { FaClock } from "react-icons/fa";
 import HeaderLevelFour from "./HeaderLevelFour";
 import HeaderLevelSix from "./HeaderLevelSix";
+import Image from "next/image";
 
 function TechnologyNews({ articles, categories }) {
   const techArticles = articles
@@ -45,13 +46,16 @@ function TechnologyNews({ articles, categories }) {
               className="shadow-lg rounded-md overflow-hidden"
               key={post._id}
             >
-              <Link href={`news/${post.slug}`}>
-                <img
-                  src={post.coverImage}
-                  alt="card image"
-                  className="rounded-md hover:scale-105 overflow-hidden duration-300 ease-in-out transition-all w-full"
-                />
-              </Link>
+              <div className="relative aspect-square h-[190px] w-full">
+                <Link href={`news/${post.slug}`}>
+                  <Image
+                    src={post.coverImage || ""}
+                    alt="card image"
+                    fill
+                    className="rounded-md hover:scale-105 overflow-hidden duration-300 ease-in-out transition-all w-full"
+                  />
+                </Link>
+              </div>
 
               <div className="px-4 py-6">
                 <HeaderLevelFour
@@ -80,18 +84,28 @@ function TechnologyNews({ articles, categories }) {
       <div className="max-w-6xl mx-auto ">
         <article className="grid grid-cols-4 justify-between items-center gap-8 ">
           {techArticles.map((post) => (
-            <div className="shadow-lg rounded-md overflow-hidden" key={post._id}>
-              <Link href={`news/${post.slug}`}>
-                <img
-                  src={post.coverImage}
-                  alt="card image"
-                  className="rounded-md hover:scale-105 overflow-hidden duration-300 ease-in-out transition-all w-full"
-                />
-              </Link>
+            <div
+              className="shadow-lg rounded-md overflow-hidden"
+              key={post._id}
+            >
+              <div className="relative aspect-square h-[140px] w-full">
+                <Link href={`news/${post.slug}`}>
+                  <Image
+                    src={post.coverImage || ""}
+                    alt="card image"
+                    fill
+                    className="rounded-md hover:scale-105 overflow-hidden duration-300 ease-in-out transition-all w-full"
+                  />
+                </Link>
+              </div>
 
               <div className="px-4 py-6">
                 <HeaderLevelFour
-                  title={post.title}
+                  title={
+                    post.title.length > 50
+                      ? post.title.substring(0, 50) + "..."
+                      : post.title
+                  }
                   href={`news/${post.slug}`}
                 />
               </div>

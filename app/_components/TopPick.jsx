@@ -23,7 +23,7 @@ async function TopPick() {
           {/* Image */}
           <Link href={`${item.slug}`}>
             <Image
-              src={item.coverImage}
+              src={item.coverImage || ""}
               alt={`Slide ${index}`}
               width={100}
               height={240}

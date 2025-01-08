@@ -17,7 +17,7 @@ async function EveryDayPick() {
             className="relative aspect-square h-20"
           >
             <Image
-              src={post.coverImage}
+              src={post.coverImage || ""}
               alt={post.title}
               fill
               className="  rounded-xl  hover:scale-105 transition-transform duration-300"

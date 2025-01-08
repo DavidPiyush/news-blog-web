@@ -15,7 +15,7 @@ function Hero({ articles, categories }) {
     return () => clearInterval(interval);
   }, []);
 
- const featuredArticles = articles.filter((post) => post.isFeatured);
+ const featuredArticles = articles?.filter((post) => post.isFeatured);
 
   
 
@@ -31,7 +31,7 @@ function Hero({ articles, categories }) {
             }`}
           >
             <Image
-              src={imgSrc.coverImage}
+              src={imgSrc.coverImage || ""}
               alt="Hero background image"
               fill
               className="object-cover"

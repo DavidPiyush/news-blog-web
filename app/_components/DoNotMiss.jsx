@@ -21,7 +21,7 @@ async function DoNotMiss() {
         >
           <Link href={`/news/${post.slug}`} passHref>
             <Image
-              src={post.coverImage}
+              src={post.coverImage|| ""}
               alt={post.title}
               width={112}
               height={75}

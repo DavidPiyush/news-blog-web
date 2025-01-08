@@ -15,7 +15,7 @@ function SportTrendList({ articles }) {
           <div className="relative w-full h-[150px] overflow-hidden rounded-t-lg">
             <Link href={`news/${post.slug}`} className="w-full">
               <Image
-                src={post.coverImage}
+                src={post.coverImage||""}
                 alt={post.title}
                 layout="fill" // Use layout="fill" for responsiveness
                 className="object-cover w-full h-full" // Ensure proper aspect ratio with object-cover

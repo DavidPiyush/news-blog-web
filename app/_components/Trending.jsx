@@ -44,7 +44,7 @@ function Trending({ articles }) {
                 <div className="w-[270px] h-[170px] relative">
                   <Link href={`/${post.categorySlug}/${post.slug}`}>
                     <Image
-                      src={post.coverImage}
+                      src={post.coverImage ||''}
                       alt={post.title}
                       fill
                       className="rounded-md hover:scale-105 overflow-hidden duration-300 ease-in-out transition-all object-cover"

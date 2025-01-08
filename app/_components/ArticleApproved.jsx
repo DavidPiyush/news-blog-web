@@ -21,7 +21,7 @@ function ArticleApproved({ articles = [] }) {
               className="flex space-x-4 cursor-pointer"
             >
               <Image
-                src={article.coverImage}
+                src={article.coverImage || ""}
                 alt={article.title}
                 width={80}
                 height={80}

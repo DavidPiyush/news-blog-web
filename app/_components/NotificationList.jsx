@@ -1,7 +1,7 @@
 import NotificationItem from "./NotificationItem";
 
 export default function NotificationList({ notifications = [] }) {
-  console.log(notifications);
+  // console.log(notifications);
   return (
     <div className="space-y-4">
       {notifications?.map((notification) => (

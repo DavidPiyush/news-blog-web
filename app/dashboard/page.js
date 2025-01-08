@@ -51,7 +51,7 @@ async function Page() {
             Total Drafts
           </h3>
           <div className="text-3xl font-bold text-yellow-500">
-            {totalDrafts.length}
+            {totalDrafts?.length}
           </div>
           <FaNewspaper className="w-8 h-8 text-yellow-500 mt-4" />
         </div>

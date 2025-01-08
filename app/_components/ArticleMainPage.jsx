@@ -38,7 +38,7 @@ function ArticleMainPage({articles}) {
                 views={article.views}
                 image={article.coverImage}
                 read={article.readingTime}
-                url={`politics-news/${article.url}`}
+                url={`${article.url}`}
                 date={article.published}
               />
             ))}
