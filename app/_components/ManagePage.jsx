@@ -1,181 +1,39 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getAllArticle, getAllCategory } from "@/app/_lib/data-service"; // Fetch articles and categories
-import {
-  FaTrashAlt,
-  FaEdit,
-  FaCheckCircle,
-  FaTimesCircle,
-} from "react-icons/fa";
-import SpinnerMini from "@/app/_components/SpinnerMini";
-import toast from "react-hot-toast";
-import { postDelete, postPublished } from "@/app/_lib/actions"; // Handle deletion and publishing logic
-import Link from "next/link"; // Import Link component
-
-function ManagePage() {
-  const router = useRouter();
-  const [articles, setArticles] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [pendingAction, setPendingAction] = useState(null); // Track pending action for specific articles
-  const [loadingArticle, setLoadingArticle] = useState(null); // Track the article being loaded
-
-  // Fetch articles and categories on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { articles } = await getAllArticle();
-        const { categories } = await getAllCategory();
-
-        const enrichedArticles = articles.map((article) => {
-          const matchedCategory = categories.find(
-            (category) => category._id === article.categories
-          );
-          return {
-            ...article,
-            category: matchedCategory ? matchedCategory.name : "Unknown",
-          };
-        });
-
-        setArticles(enrichedArticles);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Handle article deletion
-  const handleDelete = async (articleId) => {
-    if (confirm("Are you sure you want to delete this article?")) {
-      setPendingAction({ id: articleId, type: "delete" });
-      try {
-        const formData = new FormData();
-        formData.append("id", articleId);
-
-        await postDelete(formData); // Handle deletion logic
-        toast.success("Article deleted successfully.");
-        refreshData();
-      } catch (error) {
-        toast.error("Failed to delete the article. Please try again.");
-      } finally {
-        setPendingAction(null);
-      }
-    }
-  };
-
-  // Handle article publish/unpublish
-  const handlePublish = async (articleId, currentStatus) => {
-    setPendingAction({ id: articleId, type: "publish" });
-    try {
-      let newStatus;
-
-      // Determine the next status based on the current status
-      switch (currentStatus) {
-        case "draft":
-          newStatus = "published";
-          break;
-        case "published":
-          newStatus = "draft";
-          break;
-        case "archived":
-          newStatus = "draft";
-          break;
-        default:
-          throw new Error("Invalid status");
-      }
-
-      const formData = new FormData();
-      formData.append("id", articleId);
-      formData.append("status", newStatus);
-
-      await postPublished(formData); // Update status in the backend
-      toast.success(`Article status updated to ${newStatus}.`);
-      refreshData(); // Refresh the articles list
-    } catch (error) {
-      toast.error("Failed to update article status. Please try again.");
-    } finally {
-      setPendingAction(null);
-    }
-  };
-
-  // Refresh data after deletion or status update
-  const refreshData = async () => {
-    try {
-      const { articles } = await getAllArticle();
-      const { categories } = await getAllCategory();
-
-      const enrichedArticles = articles.map((article) => {
-        const matchedCategory = categories.find(
-          (category) => category._id === article.categories
-        );
-        return {
-          ...article,
-          category: matchedCategory ? matchedCategory.name : "Unknown",
-        };
-      });
-
-      setArticles(enrichedArticles);
-    } catch (error) {
-      console.error("Error refreshing data:", error);
-    }
-  };
-
-  // Filter articles based on search and status
-  const filteredArticles = articles.filter((article) => {
-    const matchesSearch = article.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      filterStatus === "all" || article.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
-
-  // Extract the first name of the author
-  const getAuthorFirstName = (authorName) => {
-    return authorName ? authorName.split(" ")[0] : "Unknown";
-  };
-
-  // Trim title to 6-7 words
-  const trimTitle = (title) => {
-    const words = title.split(" ");
-    if (words.length > 7) {
-      return words.slice(0, 7).join(" ") + "...";
-    }
-    return title;
-  };
-
-  // Handle article click
-  const handleArticleClick = async (slug) => {
-    setLoadingArticle(slug); // Set loading state
-    try {
-      // Navigate to the article page with the slug
-      router.push(`/news/${slug}`);
-    } catch (error) {
-      console.error("Error navigating to article:", error);
-    } finally {
-      setLoadingArticle(null); // Reset loading state
-    }
-  };
-
+// "use client";
+import SubmitButton from "@/app/_components/SubmitButton";
+import { postPublished } from "@/app/_lib/actions";
+import DeleteArticle from "@/app/_components/DeleteArticle";
+import Link from "next/link";
+import { FaCheckCircle, FaEdit, FaRegEyeSlash } from "react-icons/fa";
+function ManagePage({ enrichedArticles, categories }) {
   return (
-    <div className="min-h-screen py-8">
+    <div className=" min-h-screen py-8">
       <div className="max-w-screen-xl mx-auto px-6">
         <h1 className="text-4xl font-semibold text-gray-900 mb-6">
           Manage Posts
         </h1>
 
-        {/* Search */}
+        {/* Search and Filters */}
         <div className="mb-6 flex flex-wrap gap-4 items-center">
           <input
             type="text"
             placeholder="Search posts..."
             className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
           />
+          <select className="py-3 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="all">All Posts</option>
+            <option value="recent">Recent Posts</option>
+            <option value="old">Old Posts</option>
+            <option value="published">Published Posts</option>
+            <option value="unpublished">Unpublished Posts</option>
+          </select>
+          <select className="py-3 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="all">All Categories</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category.slug}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Posts Table */}
@@ -192,8 +50,8 @@ function ManagePage() {
               </tr>
             </thead>
             <tbody>
-              {filteredArticles.length > 0 ? (
-                filteredArticles.map((post) => (
+              {enrichedArticles.length > 0 ? (
+                enrichedArticles.map((post) => (
                   <tr
                     key={post._id}
                     className={`hover:bg-gray-200 ${
@@ -201,86 +59,87 @@ function ManagePage() {
                     }`}
                   >
                     <td className="px-6 py-4">
-                      <img
-                        src={post.coverImage}
-                        alt={post.title}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <Link
-                        href={`/news/${post.slug}`} // Add link to the article's page
-                        className="text-blue-500 hover:underline"
-                      >
-                        {trimTitle(post.title)}
+                      <Link href={`/news/${post.slug}`}>
+                        <img
+                          src={post.coverImage}
+                          alt={post.title}
+                          className="w-16 h-16 object-cover rounded-lg"
+                        />
                       </Link>
                     </td>
                     <td className="px-6 py-4">
-                      {getAuthorFirstName(post.author?.name)}
+                      <Link
+                        href={`/news/${post.slug}`}
+                        className="text-gray-900 hover:underline"
+                      >
+                        {post.title}
+                      </Link>
+                      <div className="text-sm text-gray-500">
+                        {post.publishedAt
+                          ? new Intl.DateTimeFormat("en-US", {
+                              year: "numeric",
+                              month: "short",
+                              day: "2-digit",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }).format(new Date(post.publishedAt))
+                          : "N/A"}
+                      </div>
                     </td>
-                    <td className="px-6 py-4">{post.category}</td>
-                    <td className="px-6 py-4">{post.views}</td>
+                    <td className="px-6 py-4">
+                      <Link
+                        href={`/author/${post?.author?.name}`}
+                        className="text-gray-900 hover:underline"
+                      >
+                        {post?.author?.name}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4 text-gray-900">{post.category}</td>
+                    <td className="px-6 py-4 text-gray-900">{post.views}</td>
                     <td className="px-6 py-4 flex space-x-2 items-center">
-                      {/* Edit Button */}
-                      <button
-                        className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg hover:shadow-xl transform transition-all duration-300 ease-in-out hover:scale-105 text-sm"
-                        onClick={() =>
-                          router.push(`/dashboard/content/editContent/${post._id}`)
-                        }
+                      <Link
+                        href={`/dashboard/content/editContent/${post._id}`}
+                        className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:bg-blue-700 focus:outline-none flex items-center justify-center transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:bg-blue-300 disabled:text-gray-500 
+      sm:px-8 md:px-6 sm:py-4 md:py-2  text-sm gap-1"
                       >
-                        <FaEdit />
-                        <span>Edit</span>
-                      </button>
-
-                      {/* Publish/Unpublish Button */}
-                      <button
-                        onClick={() => handlePublish(post._id, post.status)}
-                        disabled={pendingAction?.id === post._id}
-                        className={`${
-                          post.status === "published"
-                            ? "bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800"
-                            : post.status === "draft"
-                            ? "bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800"
-                            : "bg-gradient-to-r from-yellow-500 to-yellow-700 hover:from-yellow-600 hover:to-yellow-800"
-                        } text-white rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg hover:shadow-xl transform transition-all duration-300 ease-in-out hover:scale-105 text-sm ${
-                          pendingAction?.id === post._id ? "opacity-50" : ""
-                        }`}
-                      >
-                        {pendingAction?.id === post._id &&
-                        pendingAction?.type === "publish" ? (
-                          <SpinnerMini />
-                        ) : post.status === "published" ? (
-                          <FaCheckCircle />
-                        ) : (
-                          <FaTimesCircle />
-                        )}
                         <span>
-                          {post.status === "published"
-                            ? "Unpublish"
-                            : post.status === "draft"
-                            ? "Publish"
-                            : "Archived"}
+                          <FaEdit />
                         </span>
-                      </button>
+                        <span> Edit</span>
+                      </Link>
 
-                      {/* Delete Button */}
-                      <button
-                        onClick={() => handleDelete(post._id)}
-                        disabled={pendingAction?.id === post._id}
-                        className={`bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg hover:shadow-xl transform transition-all duration-300 ease-in-out hover:scale-105 text-sm ${
-                          pendingAction?.id === post._id ? "opacity-50" : ""
-                        }`}
-                      >
-                        {pendingAction?.id === post._id &&
-                        pendingAction?.type === "delete" ? (
-                          <SpinnerMini />
+                      <DeleteArticle articleId={post._id} />
+
+                      <form action={postPublished}>
+                        <input
+                          name="id"
+                          defaultValue={post._id}
+                          className="hidden"
+                        />
+                        <input
+                          name="status"
+                          defaultValue={post.status}
+                          className="hidden"
+                        />
+
+                        {post.status == "draft" ? (
+                          <SubmitButton
+                            pendingLabel="Publishing..."
+                            className="bg-green-600 hover:bg-green-700 "
+                          >
+                            <FaCheckCircle className="inline mr-1" />
+                            {post.status}
+                          </SubmitButton>
                         ) : (
-                          <>
-                            <FaTrashAlt />
-                            <span>Delete</span>
-                          </>
+                          <SubmitButton
+                            pendingLabel="Unpublishing..."
+                            className="bg-yellow-600 hover:bg-yellow-700 "
+                          >
+                            <FaRegEyeSlash className="inline mr-1" />
+                            {post.status}
+                          </SubmitButton>
                         )}
-                      </button>
+                      </form>
                     </td>
                   </tr>
                 ))

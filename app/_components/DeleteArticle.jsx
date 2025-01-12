@@ -18,8 +18,7 @@ function DeleteArticle({ articleId, refreshData }) {
               // Attempt to delete the article
               await postDelete(new FormData(e.target));
               toast.success("Article deleted successfully.");
-              // Refresh the data after successful deletion
-              refreshData();
+              
             } catch (error) {
               toast.error("Failed to delete the article. Please try again.");
             }

@@ -264,14 +264,21 @@ export async function postPublished(formData) {
     const id = formData.get("id"); // Assuming the form field name is 'id'
     const status = formData.get("status");
 
+    console.log(formData);
     // Validate inputs
     if (!id || !status) {
       throw new Error("Missing required fields: id or status.");
     }
 
+    
     // Determine the new status
     const updateData = {
-      status: status,
+      status:
+        status === "archived"
+          ? "draft"
+          : status === "draft"
+          ? "published"
+          : "draft",
     };
 
     await connectToDB();
