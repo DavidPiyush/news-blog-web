@@ -145,7 +145,8 @@ export async function createPost(articleData, formData) {
     //   );
     // }
 
-    revalidateTag("posts");
+    // revalidateTag("article");
+    // revalidateTag("posts");
 
     return {
       message: "Article created successfully",
@@ -202,7 +203,8 @@ export async function updatePost(articleData, formData) {
       throw new Error("Article not found or update failed.");
     }
 
-    revalidateTag("posts");
+    // revalidateTag("article");
+    // revalidateTag("posts");
     return { success: true }; // Return the updated article
   } catch (error) {
     console.error("Error updating article:", error);
@@ -229,7 +231,7 @@ export async function postApproval(formData) {
       { new: true, runValidators: true }
     );
 
-    revalidateTag("posts");
+    // revalidateTag("posts");
     return { success: true };
   } catch (error) {
     console.error("Error during approval:", error);

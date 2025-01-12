@@ -3,6 +3,7 @@
 import WebsiteSetting from "@/models/WebsiteModel";
 import { connectToDB } from "./connectDB";
 import Comment from "@/models/CommentModel";
+import { unstable_cache } from "next/cache";
 
 // const baseUrl = process.env.NEXTAUTH_URL || "https://news-blog-web.vercel.app";
 const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
@@ -155,7 +156,7 @@ export async function getAllArticle() {
       headers: {
         "Content-Type": "application/json",
       },
-      next: { tags: ["posts"] },
+      cache: "no-store",
     });
 
     if (!response) {
@@ -173,14 +174,14 @@ export async function getAllArticle() {
   }
 }
 
-export async function getFilteredArticles() {
+export  async function getFilteredArticles() {
   try {
     const response = await fetch(`${baseUrl}/api/articles`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      next: { tags: ["posts"] },
+      cache: "no-store",
     });
 
     if (!response) {

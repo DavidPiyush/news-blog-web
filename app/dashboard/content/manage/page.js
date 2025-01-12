@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FaCheckCircle, FaEdit, FaRegEyeSlash } from "react-icons/fa";
 export const dynamic = "force-dynamic";
 
+
 export const metadata = {
   title: "Manage Content",
 };
