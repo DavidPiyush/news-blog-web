@@ -5,9 +5,7 @@ import {
   getFilteredArticles,
 } from "../_lib/data-service";
 import PostList from "../_components/PostList";
-
-export const dynamic = "force-dynamic"; // Mark the page as dynamic
-// export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Dashboard",

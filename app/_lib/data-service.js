@@ -155,6 +155,7 @@ export async function getAllArticle() {
       headers: {
         "Content-Type": "application/json",
       },
+      next: { tags: ["posts"] },
     });
 
     if (!response) {
@@ -179,6 +180,7 @@ export async function getFilteredArticles() {
       headers: {
         "Content-Type": "application/json",
       },
+      next: { tags: ["posts"] },
     });
 
     if (!response) {
@@ -255,6 +257,7 @@ export async function UpdateArticle(articleId, data) {
         headers: {
           "Content-Type": "application/json",
         },
+        next: { tags: ["updateArticle"] },
         body: JSON.stringify(data),
       }
     );
@@ -276,6 +279,7 @@ export async function deleteArticle(id) {
   try {
     const response = await fetch(`${baseUrl}/api/articles/${id}/delete`, {
       method: "DELETE",
+      next: { tags: ["DeleteArticle"] },
     });
 
     if (!response.ok) {

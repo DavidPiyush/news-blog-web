@@ -54,7 +54,7 @@ function EditorContentPage({ userID, categories, role }) {
 
   return (
     <div className="rounded-xl w-full max-w-5xl p-8 bg-white text-gray-800">
-      <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
+      <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center ">
         Create News Article
       </h1>
       <form
@@ -196,6 +196,18 @@ function EditorContentPage({ userID, categories, role }) {
           />
           <label className="ml-2 text-lg font-semibold text-gray-700">
             Feature this post
+          </label>
+        </div>
+        {/* Comment Checkbox */}
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            value="true"
+            name="isCommentAllowed"
+            className="h-5 w-5  bg-transparent text-slate-300"
+          />
+          <label className="ml-2 text-lg font-semibold text-gray-700">
+            Allow Comments
           </label>
         </div>
 

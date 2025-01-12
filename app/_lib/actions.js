@@ -1,6 +1,6 @@
 "use server";
 const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import {
   CreateCategory,
   deleteCategory,
@@ -113,7 +113,7 @@ export async function createPost(articleData, formData) {
       ...articleData,
       title,
 
-      slug: slugify(title.trim()),
+      slug: slugify(title.trim().toLowerCase()),
       subTitle,
       summary,
       categories: new Types.ObjectId(categories).toString(), // Convert ObjectId to string
@@ -146,7 +146,7 @@ export async function createPost(articleData, formData) {
     //   );
     // }
 
-    revalidatePath("/dashboard/content/article", "page");
+   revalidateTag("posts");
 
     return {
       message: "Article created successfully",
@@ -203,7 +203,7 @@ export async function updatePost(articleData, formData) {
       throw new Error("Article not found or update failed.");
     }
 
-    revalidatePath("/dashboard/content/manage");
+    revalidateTag("posts");
     return { success: true }; // Return the updated article
   } catch (error) {
     console.error("Error updating article:", error);
@@ -230,7 +230,7 @@ export async function postApproval(formData) {
       { new: true, runValidators: true }
     );
 
-    revalidatePath("/dashboard/setting/approval");
+   revalidateTag("posts");
     return { success: true };
   } catch (error) {
     console.error("Error during approval:", error);
@@ -249,7 +249,7 @@ export async function postDelete(formData) {
 
     await Article.findByIdAndDelete(id);
 
-    revalidatePath("/dashboard/content/manage");
+    revalidateTag("DeleteArticle");
   } catch (error) {
     console.error("Error in postDelete:", error);
     throw new Error("Failed to delete article");
@@ -280,7 +280,7 @@ export async function postPublished(formData) {
       runValidators: true,
     });
 
-    revalidatePath("/dashboard/content/manage");
+    revalidateTag('posts')
 
     return { success: true };
   } catch (error) {

@@ -4,8 +4,7 @@ import { postPublished } from "@/app/_lib/actions";
 import { getAllArticle, getAllCategory } from "@/app/_lib/data-service";
 import Link from "next/link";
 import { FaCheckCircle, FaEdit, FaRegEyeSlash } from "react-icons/fa";
-
-export const dynamic = "force-dynamic"; // Mark the page as dynamic
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Manage Content",
