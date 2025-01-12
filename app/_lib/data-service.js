@@ -5,8 +5,8 @@ import { connectToDB } from "./connectDB";
 import Comment from "@/models/CommentModel";
 import { unstable_cache } from "next/cache";
 
-// const baseUrl = process.env.NEXTAUTH_URL || "https://news-blog-web.vercel.app";
-const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXTAUTH_URL || "https://news-blog-web.vercel.app";
+// const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
 // Get user from database
 

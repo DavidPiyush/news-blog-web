@@ -1,5 +1,5 @@
 "use server";
-const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+
 import { revalidatePath, revalidateTag } from "next/cache";
 import {
   CreateCategory,
