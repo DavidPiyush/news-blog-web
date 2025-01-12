@@ -155,13 +155,15 @@ export async function getAllArticle() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Origin: "https://news-blog-web.vercel.app", // Add the Origin header
       },
-      next: { tags: ["article","post"]},
+      next: { tags: ["article", "post"] },
     });
 
-    if (!response) {
+    if (!response.ok) {
+      // Use .ok to check response status
       throw new Error(
-        `Failed to fetch user: ${response.status} ${response.statusText}`
+        `Failed to fetch articles: ${response.status} ${response.statusText}`
       );
     }
 
@@ -169,7 +171,7 @@ export async function getAllArticle() {
 
     return articles;
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error("Error fetching articles:", error);
     throw error;
   }
 }
@@ -180,6 +182,7 @@ export async function getFilteredArticles() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Origin: "https://news-blog-web.vercel.app",
       },
       next: { tags: ["posts"] },
     });
