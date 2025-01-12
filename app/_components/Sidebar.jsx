@@ -257,8 +257,8 @@ function Sidebar({ role }) {
   );
 
   return (
-    <nav className="hidden md:block bg-white text-gray-800 p-4 shadow-lg  ">
-      <ul className="flex flex-col gap-2  text-lg  overflow-y-auto hide-scrollbar h-screen  ">
+    <nav className="hidden md:block bg-white text-gray-800 p-4 shadow-lg  h-screen hide-scrollbar overflow-y-auto mb-12">
+      <ul className="flex flex-col gap-2  text-lg      ">
         {filteredSections.map((section, idx) => (
           <li key={idx}>
             {section.link ? (

@@ -40,9 +40,9 @@ function Hero({ articles, categories }) {
             {/* Dark Overlay */}
             <div className="absolute inset-0 bg-black/30"></div>
 
-            <div className="text-white overflow-hidden absolute bottom-[150px] py-4 flex justify-center items-start flex-col ml-24 px-6 space-y-4">
-              <Link href={`news/${imgSrc.slug}`}>
-                <span className="bg-blue-400 px-2 py-2 text-white rounded-lg cursor-pointer text-sm font-bold uppercase -tracking-tight">
+            <div className="text-white overflow-hidden absolute bottom-[150px] py-4 flex justify-center items-start flex-col ml-24 px-6 ">
+              <Link href={`news/${imgSrc.slug}`} className="space-y-4">
+                <span className="bg-blue-400 px-2 py-2 text-white rounded-lg cursor-pointer text-sm font-bold uppercase -tracking-tight ">
                   {imgSrc.categories.includes(categories._id).name ||
                     "Technology"}
                 </span>

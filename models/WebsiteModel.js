@@ -52,5 +52,8 @@ const generalSettingsSchema = new mongoose.Schema(
   }
 );
 
-const WebsiteSetting = mongoose.models.WebsiteSetting || mongoose.model("WebsiteSetting", generalSettingsSchema);
+const WebsiteSetting =
+  mongoose.models?.WebsiteSetting ||
+  mongoose.model("WebsiteSetting", generalSettingsSchema);
+
 export default WebsiteSetting;

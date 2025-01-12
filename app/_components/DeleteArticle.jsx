@@ -1,12 +1,11 @@
-"use client";
+'use client'
 import { useTransition } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import SpinnerMini from "./SpinnerMini";
-
 import { postDelete } from "../_lib/actions";
 import toast from "react-hot-toast";
 
-function DeleteArticle({ articleId }) {
+function DeleteArticle({ articleId, refreshData }) {
   const [isPending, startTransition] = useTransition();
 
   return (
@@ -16,8 +15,11 @@ function DeleteArticle({ articleId }) {
         if (confirm("Are you sure you want to delete this article?")) {
           startTransition(async () => {
             try {
+              // Attempt to delete the article
               await postDelete(new FormData(e.target));
               toast.success("Article deleted successfully.");
+              // Refresh the data after successful deletion
+              refreshData();
             } catch (error) {
               toast.error("Failed to delete the article. Please try again.");
             }

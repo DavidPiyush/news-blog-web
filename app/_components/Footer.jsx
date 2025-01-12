@@ -10,6 +10,7 @@ import Logo from "./Logo";
 import TextDescription from "./TextDescription";
 import { getFilteredArticles } from "../_lib/data-service";
 import Link from "next/link";
+export const revalidate = 0;
 
 async function Footer() {
   const  articles  = await getFilteredArticles();

@@ -9,7 +9,7 @@ import TopViewNews from "./TopViewNews";
 import VerticalCard from "./VerticalCard";
 import { useState } from "react";
 
-function ArticleMainPage({articles}) {
+function ArticleMainPage({articles=[]}) {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3; // Adjust this value based on the total number of pages
 

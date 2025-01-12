@@ -5,6 +5,8 @@ import { connectToDB } from "./connectDB";
 
 export async function createWebsiteSittings(formData) {
   try {
+    // Connect to the database
+    await connectToDB();
     // Parse form data into an object
     const {
       websiteName,
@@ -33,9 +35,6 @@ export async function createWebsiteSittings(formData) {
       },
     };
 
-    // Connect to the database
-    await connectToDB();
-
     // Create and save the new website settings
     const newSettings = new WebsiteSetting(data);
     await newSettings.save();
@@ -54,8 +53,10 @@ export async function createWebsiteSittings(formData) {
 export async function updateWebsiteSittings(formData) {
   try {
     // Parse form data into an object
+    // Connect to the database
+    await connectToDB();
     const {
-    //   id,
+      //   id,
       websiteName,
       contactPhone,
       footerText,
@@ -82,13 +83,11 @@ export async function updateWebsiteSittings(formData) {
       },
     };
 
-   
-    // Connect to the database
-    await connectToDB();
+    
 
     // Update the website settings (assuming only one settings document exists)
     const updatedSettings = await WebsiteSetting.findOneAndUpdate(
-     {}, // Find the first document (adjust this filter if needed)
+      {}, // Find the first document (adjust this filter if needed)
       data, // Update with new data
       { new: true, runValidators: true } // Return the updated document
     );

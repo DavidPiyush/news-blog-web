@@ -271,7 +271,7 @@ export async function postPublished(formData) {
 
     // Determine the new status
     const updateData = {
-      status: status === "draft" ? "published" : "draft",
+      status: status,
     };
 
     await connectToDB();

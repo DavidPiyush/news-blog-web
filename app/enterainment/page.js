@@ -4,7 +4,7 @@ import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
 import NotFound from "../not-found";
 import Spinner from "../_components/Spinner";
 export const dynamic = 'force-dynamic'; // Mark the page as dynamic
-// export const revalidate = 3600;  // Cache expires after 1 hour
+export const revalidate = 0;  // Cache expires after 1 hour
 
 
 export const metadata = {

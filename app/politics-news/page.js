@@ -1,7 +1,8 @@
 import ArticleMainPage from "../_components/ArticleMainPage";
 import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
-export const dynamic = 'force-dynamic'; // Mark the page as dynamic
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
 
+export const revalidate = 0;
 // export async function generateStaticParams() {
 //   try {
 //     const articles = await getFilteredArticles();
@@ -20,14 +21,13 @@ export const dynamic = 'force-dynamic'; // Mark the page as dynamic
 //   }
 // }
 
-
-
 async function Page() {
   const articles = await getFilteredArticles();
   const { categories } = await getAllCategory();
+
   const politicsArticles = articles
     .filter((article) => {
-      // Find the category object that matches the name "Tech"
+      // Find the category object that matches the name Politics News"
       const techCategory = categories.find(
         (category) => category.slug === "politics-news"
       );
@@ -47,6 +47,7 @@ async function Page() {
         categoryName: matchedCategory ? matchedCategory.name : "Unknown",
       };
     });
+
   return <ArticleMainPage articles={politicsArticles} />;
 }
 export default Page;

@@ -156,7 +156,7 @@ export async function getAllArticle() {
       headers: {
         "Content-Type": "application/json",
       },
-      next: { tags: ["article","post"],revalidate:0 },
+      next: { tags: ["article","post"]},
     });
 
     if (!response) {
@@ -181,7 +181,7 @@ export async function getFilteredArticles() {
       headers: {
         "Content-Type": "application/json",
       },
-      next: { tags: ["posts"], revalidate: 0 },
+      next: { tags: ["posts"] },
     });
 
     if (!response) {
@@ -233,7 +233,7 @@ export async function CreateArticle(data) {
       headers: {
         "Content-Type": "application/json",
       },
-      next: { tags: ["posts"] },
+     
       body: JSON.stringify(data),
     });
 

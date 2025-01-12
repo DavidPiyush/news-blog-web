@@ -15,10 +15,10 @@ async function DashboardHeader() {
   const { user } = await getUser(session?.user?.email);
 
   return (
-    <div className="h-16 flex items-center justify-between px-6  text-gray-800 shadow-md z-50 sticky top-0">
+    <div className="h-16 flex items-center justify-between px-6  text-gray-800 shadow-md z-50 bg-gradient-to-r from-blue-100 to-purple-100   sticky top-0">
       {/* Left Section */}
       <div className="flex items-center space-x-4">
-        <Link href={'/dashboard'} className="text-xl font-semibold">
+        <Link href={"/dashboard"} className="text-xl font-semibold">
           <span className="text-indigo-500 capitalize">{user.role}</span> Panel
         </Link>
         <div className="hidden lg:flex text-sm text-gray-600 px-4">
