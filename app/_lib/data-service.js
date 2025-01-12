@@ -156,7 +156,7 @@ export async function getAllArticle() {
       headers: {
         "Content-Type": "application/json",
       },
-      next: { tags: ["posts"] },
+      next: { tags: ["article","post"] },
     });
 
     if (!response) {
@@ -174,7 +174,7 @@ export async function getAllArticle() {
   }
 }
 
-export  async function getFilteredArticles() {
+export async function getFilteredArticles() {
   try {
     const response = await fetch(`${baseUrl}/api/articles`, {
       method: "GET",
@@ -211,7 +211,6 @@ export async function getArticlesBasedOnSlug(slug) {
       headers: {
         "Content-Type": "application/json",
       },
-      next: { tags: ["posts"] },
     });
 
     if (!response.ok) {
@@ -260,7 +259,6 @@ export async function UpdateArticle(articleId, data) {
         headers: {
           "Content-Type": "application/json",
         },
-        next: { tags: ["posts"] },
         body: JSON.stringify(data),
       }
     );
@@ -282,7 +280,6 @@ export async function deleteArticle(id) {
   try {
     const response = await fetch(`${baseUrl}/api/articles/${id}/delete`, {
       method: "DELETE",
-      next: { tags: ["posts"] },
     });
 
     if (!response.ok) {

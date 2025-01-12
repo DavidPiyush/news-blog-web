@@ -146,7 +146,7 @@ export async function createPost(articleData, formData) {
     // }
 
     // revalidateTag("article");
-    revalidateTag("posts");
+    revalidateTag("article");
 
     return {
       message: "Article created successfully",
