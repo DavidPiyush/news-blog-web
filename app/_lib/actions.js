@@ -232,7 +232,7 @@ export async function postApproval(formData) {
       { new: true, runValidators: true }
     );
 
-    // revalidateTag("posts");
+    revalidateTag("article");
     return { success: true };
   } catch (error) {
     console.error("Error during approval:", error);
@@ -251,7 +251,7 @@ export async function postDelete(formData) {
 
     await Article.findByIdAndDelete(id);
 
-    revalidateTag("posts");
+    revalidateTag("article");
   } catch (error) {
     console.error("Error in postDelete:", error);
     throw new Error("Failed to delete article");
@@ -282,7 +282,7 @@ export async function postPublished(formData) {
       runValidators: true,
     });
 
-    revalidateTag("posts");
+    revalidateTag("article");
 
     return { success: true };
   } catch (error) {
