@@ -1,15 +1,12 @@
 import Link from "next/link";
-import { getFilteredArticles } from "../_lib/data-service";
-
-async function TopViewNews() {
-  const articles = await getFilteredArticles(); // Fetch your articles
-
-  // Filter articles with views greater than 100
-  const filteredArticles = articles.filter((article) => article.views > 50);
+async function TopViewNews({ articles }) {
+  const articlesData = articles
+    ?.filter((article) => article.status === status && article.isApproved) // Step 1: Filter articles
+    .sort((a, b) => b.views - a.views); // Step 2: Sort
 
   return (
     <div className="space-y-4">
-      {filteredArticles.map((item) => (
+      {articlesData?.map((item) => (
         <div
           key={item._id}
           className="grid grid-cols-3 gap-4 border border-gray-300 rounded-md shadow-sm overflow-hidden hover:shadow-lg transition-all transform hover:scale-105 bg-white"

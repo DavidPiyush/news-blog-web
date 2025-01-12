@@ -1,11 +1,13 @@
 import { Suspense } from "react";
 import ArticleMainPage from "../_components/ArticleMainPage";
-import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
-import NotFound from "../not-found";
 import Spinner from "../_components/Spinner";
-export const dynamic = 'force-dynamic'; // Mark the page as dynamic
-export const revalidate = 0;  // Cache expires after 1 hour
+import NotFound from "../not-found";
+import Article from "@/models/ArticleModel";
+import Category from "@/models/CategoryModel";
+import { connectToDB } from "../_lib/connectDB";
 
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
+export const revalidate = 0; // Cache expires after 1 hour
 
 export const metadata = {
   title: "Entertainment",
@@ -13,11 +15,18 @@ export const metadata = {
 
 async function Page() {
   try {
-    // Fetch articles and categories
-    const articles = await getFilteredArticles();
-    const { categories } = await getAllCategory();
+    await connectToDB(); // Ensure the database connection is established
 
-    // Handle case where no articles or categories are found
+    // Fetch articles and categories
+    const articlesData = await Article.find().populate("author").lean();
+    const categories = await Category.find().lean();
+
+    // Filter articles by status and approval
+    const status = "published";
+    const articles = articlesData?.filter(
+      (article) => article.status === status && article.isApproved
+    );
+
     if (!articles || articles.length === 0) {
       console.warn("No articles found.");
       return (
@@ -28,29 +37,26 @@ async function Page() {
     }
 
     // Filter and map entertainment articles
-    const entertainmentArticles = articles
-      .filter((article) => {
-        // Find the category object that matches the slug "entertainment"
-        const entertainmentCategory = categories?.find(
-          (category) => category.slug === "entertainment"
-        );
+    const entertainmentCategory = categories.find(
+      (category) => category.slug === "entertainment"
+    );
 
-        // Check if the article's category matches the entertainment category's ID
-        return (
-          entertainmentCategory &&
-          article.categories === entertainmentCategory._id
-        );
-      })
-      .map((article) => {
-        // Append the category name to the article
-        const matchedCategory = categories.find(
-          (category) => category._id === article.categories
-        );
-        return {
-          ...article,
-          categoryName: matchedCategory ? matchedCategory.name : "Unknown",
-        };
-      });
+    if (!entertainmentCategory) {
+      console.warn("Entertainment category not found.");
+      return null; // Exit early if the category doesn't exist
+    }
+
+    // Filter articles related to the entertainment category
+    const entertainmentArticles = articles
+      .filter(
+        (article) =>
+          article.categories?.toString() ===
+          entertainmentCategory._id.toString()
+      )
+      .map((article) => ({
+        ...article,
+        categoryName: entertainmentCategory.name,
+      }));
 
     // Render the page
     return (

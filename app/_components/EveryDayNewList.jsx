@@ -1,12 +1,13 @@
-import Link from "next/link";
-import HeaderLevelSix from "./HeaderLevelSix";
 import HeaderLevelFour from "./HeaderLevelFour";
 
 
 function EveryDayNewList({articles}) {
+   const getRecentArticle = articles
+     ?.filter((article) => article.createdAt)
+     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   return (
     <>
-      {articles?.map((post) => (
+      {getRecentArticle?.map((post) => (
         <div
           className="shadow-md hover:shadow-lg rounded-lg overflow-hidden bg-white transition-all duration-300 mt-[-100px]"
           key={post.id}

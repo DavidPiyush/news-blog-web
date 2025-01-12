@@ -164,8 +164,12 @@ function NewsPage({ article = [], user = [], articles = [], comments = [] }) {
               authorBio={user?.bio}
             />
             <RelatedPosts articles={articles} />
-            <CommentCard comments={comments} id={article._id} />
-            <CommentForm id={article._id} />
+            {article.isCommentAllowed && (
+              <>
+                <CommentCard comments={comments} id={article._id} />
+                <CommentForm id={article._id} />{" "}
+              </>
+            )}
           </div>
         </div>
 
@@ -191,7 +195,7 @@ function NewsPage({ article = [], user = [], articles = [], comments = [] }) {
           {/* </div> */}
 
           <DoNotMiss />
-          <TopPick />
+          <TopPick articles={articles} />
           <div className="  space-y-8">
             <h5 className="bg-gray-900 text-white text-xl font-semibold px-4 py-2 rounded-md">
               Stay In Touch

@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Header from "./_components/Header";
-import { getAllCategory, getFilteredArticles } from "./_lib/data-service";
+import { connectToDB } from "./_lib/connectDB";
+import Article from "@/models/ArticleModel";
+import Category from "@/models/CategoryModel";
 import SubNavigation from "./_components/SubNavigation";
 import Hero from "./_components/Hero";
 import Trending from "./_components/Trending";
@@ -10,23 +12,29 @@ import WorldPolitics from "./_components/WorldPolitics";
 import AdsHorizontalBig from "./_components/AdsHorizontalBig";
 import TechnologyNews from "./_components/TechnologyNews";
 import Footer from "./_components/Footer";
-export const dynamic = "force-dynamic"; // Mark the page as dynamic
 
-export const revalidate = 0;
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
 
 export const metadata = {
   title: "News App",
 };
 
-// Revalidate data every hour
-
 export default async function Home() {
   try {
-    // Fetch articles and categories
-    const articles = await getFilteredArticles();
-    const { categories } = await getAllCategory();
+    // Establish a connection to the database
+    await connectToDB();
 
-    // Handle case where no articles are available
+    // Fetch articles and categories
+    const articlesData = await Article.find().populate("author").lean();
+    const categories = await Category.find().lean();
+
+    // Filter articles by status and approval
+    const status = "published";
+    const articles = articlesData?.filter(
+      (article) => article.status === status && article.isApproved
+    );
+
+    // Handle the case where no articles are available
     if (!articles || articles.length === 0) {
       console.warn("No articles found.");
       return (
@@ -40,7 +48,7 @@ export default async function Home() {
       );
     }
 
-    // Render the page with content
+    // Render the page with articles and categories
     return (
       <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
         <Header />
@@ -56,7 +64,9 @@ export default async function Home() {
       </section>
     );
   } catch (error) {
-    console.error("Error loading Home page:", error);
+    console.error("Error loading Home page:", error.message);
+
+    // Handle the error state
     return (
       <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
         <Header />

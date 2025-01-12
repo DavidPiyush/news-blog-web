@@ -6,30 +6,26 @@ import TopPick from "./TopPick";
 import EveryDayPick from "./EveryDayPick";
 import EveryDayNewList from "./EveryDayNewList";
 
+function WorldPolitics({ articles, categories }) {
+  const sportsCategory = categories.find(
+    (category) => category.slug === "politics-news"
+  );
 
-function WorldPolitics({articles, categories}) {
-   const politicsArticles = articles
-     .filter((article) => {
-       // Find the category object that matches the name "Tech"
-       const techCategory = categories.find(
-         (category) => category.slug === "politics-news"
-       );
+  if (!sportsCategory) {
+    console.warn("Sports category not found.");
+    return null; // Exit early if the category doesn't exist
+  }
 
-       // Check if the article's category matches the found category's _id
-       return techCategory && article.categories === techCategory._id;
-     })
-     .map((article) => {
-       // Find the matching category again to append the name
-       const matchedCategory = categories.find(
-         (category) => category._id === article.categories
-       );
-
-       // Return a new object with the category name appended
-       return {
-         ...article,
-         categoryName: matchedCategory ? matchedCategory.name : "Unknown",
-       };
-     });
+  // Filter articles related to the sports category
+  const politicsArticles = articles
+    .filter(
+      (article) =>
+        article.categories?.toString() === sportsCategory._id.toString()
+    )
+    .map((article) => ({
+      ...article,
+      categoryName: sportsCategory.name,
+    }));
 
   return (
     <section className="">
@@ -61,7 +57,7 @@ function WorldPolitics({articles, categories}) {
 
         {/* Right Section: Featured Content */}
         <div className="col-span-3 space-y-6 sticky top-24 h-max ">
-          <TopPick />
+          <TopPick articles={politicsArticles} />
           <EveryDayPick />
         </div>
       </div>

@@ -3,10 +3,11 @@ import ArticleMainPage from "../_components/ArticleMainPage";
 import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
 import Spinner from "../_components/Spinner";
 import NotFound from "../not-found";
-export const dynamic = 'force-dynamic'; // Mark the page as dynamic
+import Article from "@/models/ArticleModel";
+import Category from "@/models/CategoryModel";
+import { connectToDB } from "../_lib/connectDB";
 
-export const revalidate = 0;  // Cache expires after 1 hour
-
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
 
 export const metadata = {
   title: "Tech News",
@@ -14,30 +15,21 @@ export const metadata = {
 
 async function Page() {
   try {
+    await connectToDB(); // Ensure the database connection is established
+
     // Fetch articles and categories
-    const articles = await getFilteredArticles();
-    const { categories } = await getAllCategory();
+    const articlesData = await Article.find().populate("author").lean();
+    const categories = await Category.find().lean();
 
-    // Filter articles for the "Tech News" category
-    const techArticles = articles
-      .filter((article) => {
-        const techCategory = categories.find(
-          (category) => category.slug === "tech-news"
-        );
-        return techCategory && article.categories === techCategory._id;
-      })
-      .map((article) => {
-        const matchedCategory = categories.find(
-          (category) => category._id === article.categories
-        );
-        return {
-          ...article,
-          categoryName: matchedCategory ? matchedCategory.name : "Unknown",
-        };
-      });
+    // Filter articles by status and approval
+    const status = "published";
+    
+    const articles = articlesData?.filter(
+      (article) => article.status === status && article.isApproved
+    );
 
-    // If no tech articles are found, show NotFound
-    if (techArticles.length === 0) {
+    if (!articles || articles.length === 0) {
+      console.warn("No articles found.");
       return (
         <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
           <NotFound />
@@ -45,16 +37,41 @@ async function Page() {
       );
     }
 
-    // Render Tech Articles
+    // Filter and map tech articles
+    const techCategory = categories.find(
+      (category) => category.slug === "tech-news"
+    );
+
+    if (!techCategory) {
+      console.warn("Tech category not found.");
+      return null; // Exit early if the category doesn't exist
+    }
+
+    // Filter articles related to the tech category
+    const techArticles = articles
+      .filter(
+        (article) =>
+          article.categories?.toString() === techCategory._id.toString()
+      )
+      .map((article) => ({
+        ...article,
+        categoryName: techCategory.name,
+      }));
+
+    // Render the page
     return (
       <div>
-        <Suspense fallback={<Spinner />}>
-          <ArticleMainPage articles={techArticles} />
-        </Suspense>
+        {techArticles.length > 0 ? (
+          <Suspense fallback={<Spinner />}>
+            <ArticleMainPage articles={techArticles} />
+          </Suspense>
+        ) : (
+          <NotFound />
+        )}
       </div>
     );
   } catch (error) {
-    console.error("Error loading Tech News Page:", error);
+    console.error("Error rendering Tech News page:", error);
     return (
       <section className="bg-primary-950 text-primary-100 min-h-screen flex flex-col relative">
         <NotFound />

@@ -4,19 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 
 function SportsTrendMain({ articles = [] }) {
-  // State for current slide
+  // Get popular articles sorted by views
+  const getPopularArticles = articles
+    ?.filter((item) => item.views)
+    .sort((a, b) => b.views - a.views);
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Automatically change slide every 5 seconds
   useEffect(() => {
-    if (articles.length > 0) {
+    if (getPopularArticles.length > 0) {
       const timer = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % articles.length); // Loop through articles
+        setCurrentIndex(
+          (prevIndex) => (prevIndex + 1) % getPopularArticles.length
+        ); // Loop through articles
       }, 5000); // Change slide every 5000ms (5 seconds)
 
       return () => clearInterval(timer); // Cleanup interval on component unmount
     }
-  }, [articles]);
+  }, [getPopularArticles]);
 
   // Function to change slide on indicator click
   const handleIndicatorClick = (index) => {
@@ -24,7 +30,7 @@ function SportsTrendMain({ articles = [] }) {
   };
 
   // If no articles available, return early
-  if (articles.length === 0) {
+  if (getPopularArticles.length === 0) {
     return <div>No articles available</div>;
   }
 
@@ -34,12 +40,12 @@ function SportsTrendMain({ articles = [] }) {
       <div className="relative w-full h-[500px] overflow-hidden rounded-lg shadow-lg">
         {/* Wrap Image with Link */}
         <Link
-          href={`news/${articles[currentIndex]?.slug}`}
+          href={`news/${getPopularArticles[currentIndex]?.slug}`}
           className="relative block w-full h-full"
         >
           <Image
-            src={articles[currentIndex]?.coverImage || ""}
-            alt={articles[currentIndex]?.title || ""}
+            src={getPopularArticles[currentIndex]?.coverImage || ""}
+            alt={getPopularArticles[currentIndex]?.title || ""}
             layout="fill"
             className="object-cover rounded-lg"
           />
@@ -47,15 +53,26 @@ function SportsTrendMain({ articles = [] }) {
         {/* Title and Text with Stronger Shaded Background */}
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black to-transparent p-6 text-white">
           <Link
-            href={`news/${articles[currentIndex]?.slug}`}
+            href={`news/${getPopularArticles[currentIndex]?.slug}`}
             className="relative block w-full h-full"
           >
             <h2 className="text-3xl font-bold text-white hover:text-blue-500 transition-colors">
-              {articles[currentIndex]?.title || "Title not available"}
+              {getPopularArticles[currentIndex]?.title || "Title not available"}
             </h2>
             <p className="mt-2 text-sm">
-              By {articles[currentIndex]?.author.name || "Author not available"} |{" "}
-              {articles[currentIndex]?.published || "Date not available"}
+              By{" "}
+              {getPopularArticles[currentIndex]?.author.name ||
+                "Author not available"}{" "}
+              |{" "}
+              {getPopularArticles[currentIndex]?.publishedAt
+                ? new Date(
+                    getPopularArticles[currentIndex].publishedAt
+                  ).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : "Date not available"}
             </p>
           </Link>
         </div>
@@ -63,7 +80,7 @@ function SportsTrendMain({ articles = [] }) {
 
       {/* Pagination Indicators */}
       <div className="flex justify-center space-x-2 mt-4">
-        {articles.map((_, index) => (
+        {getPopularArticles.map((_, index) => (
           <div
             key={index}
             onClick={() => handleIndicatorClick(index)}

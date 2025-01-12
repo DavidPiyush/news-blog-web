@@ -59,7 +59,7 @@ const PostList = ({ articles = [], header }) => {
                   {post.publishedAt && !isNaN(new Date(post.publishedAt))
                     ? format(new Date(post.publishedAt), "MMMM dd, yyyy")
                     : "Date not available"}{" "}
-                  | {post?.author?.name} | Views: {post.views}
+                  | {post?.author} | Views: {post.views}
                 </p>
                 <p
                   className={`mt-2 px-3 py-1 rounded-lg ${getCategoryBackgroundColor(

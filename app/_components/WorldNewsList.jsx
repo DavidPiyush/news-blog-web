@@ -4,15 +4,15 @@ import HeaderLevelFour from "./HeaderLevelFour";
 import HeaderLevelSix from "./HeaderLevelSix";
 import TextDescription from "./TextDescription";
 
-function WorldNewsList({ articles, categories }) {
+function WorldNewsList({ articles }) {
   return (
     <>
       {articles?.map((post) => (
         <div
-          className="shadow-md hover:shadow-lg rounded-lg overflow-hidden bg-white transition-all duration-300 flex"
+          className="shadow-lg hover:shadow-lg rounded-lg overflow-hidden bg-white  transition-all duration-300 flex"
           key={post.id}
         >
-          <Link href={`news/${post.slug}`}>
+          <Link href={`news/${post.slug}`} >
             <img
               src={post.coverImage}
               alt="card image"

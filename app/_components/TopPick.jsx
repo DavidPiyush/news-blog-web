@@ -1,12 +1,12 @@
-import { FaAngleRight } from "react-icons/fa6";
 import HeaderLevelSix from "./HeaderLevelSix";
-import TextDescription from "./TextDescription"; // Ensure getUserData is a valid function
+import TextDescription from "./TextDescription";
 import Image from "next/image";
 import Link from "next/link";
-import { getAllArticle, getFilteredArticles } from "../_lib/data-service";
 
-async function TopPick() {
-  const articles = await getFilteredArticles();
+async function TopPick({ articles }) {
+  const getPopularArticles = articles
+    ?.filter((item) => item.views)
+    .sort((a, b) => b.views - a.views);
 
   return (
     <>
@@ -15,7 +15,7 @@ async function TopPick() {
       </h5>
 
       {/* Ensure getArticle is an array before attempting to slice */}
-      {articles.slice(0, 1).map((item, index) => (
+      {getPopularArticles?.slice(0, 1)?.map((item, index) => (
         <div
           key={item._id}
           className="relative shadow-md hover:shadow-lg rounded-md overflow-hidden bg-white transition-all duration-300 group mt-10"

@@ -94,5 +94,5 @@ const articleSchema = new mongoose.Schema(
 
 // Model Creation
 const Article =
-  mongoose.models.Article || mongoose.model("Article", articleSchema);
+  mongoose.models?.Article || mongoose.model("Article", articleSchema);
 export default Article;

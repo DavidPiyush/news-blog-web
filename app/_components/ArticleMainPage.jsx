@@ -1,6 +1,5 @@
 'use client'
 import Link from "next/link";
-import DoNotMiss from "./DoNotMiss";
 import NewsHeader from "./NewsHeader";
 import SocailLinkBox from "./SocailLinkBox";
 import SportsTrendMain from "./SportsTrendMain";
@@ -8,6 +7,7 @@ import SportTrendList from "./SportTrendList";
 import TopViewNews from "./TopViewNews";
 import VerticalCard from "./VerticalCard";
 import { useState } from "react";
+import NewsLetter from "./NewsLetter";
 
 function ArticleMainPage({articles=[]}) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,9 +19,9 @@ function ArticleMainPage({articles=[]}) {
  };
   return (
     <section className="mt-12 max-w-6xl mx-auto">
-      <div className="  grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <SportsTrendMain articles={articles} />
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           <SportTrendList articles={articles} />
         </div>
       </div>
@@ -38,7 +38,7 @@ function ArticleMainPage({articles=[]}) {
                 views={article.views}
                 image={article.coverImage}
                 read={article.readingTime}
-                url={`${article.url}`}
+                url={`${article.slug}`}
                 date={article.published}
               />
             ))}
@@ -106,7 +106,7 @@ function ArticleMainPage({articles=[]}) {
             <h5 className="bg-gray-900 text-white text-xl font-semibold px-4 py-2 rounded-md">
               Most Viewed
             </h5>
-            <TopViewNews />
+            <TopViewNews  articles={articles}/>
           </div>
 
           <div className=" space-y-8">
@@ -116,8 +116,8 @@ function ArticleMainPage({articles=[]}) {
             <SocailLinkBox />
           </div>
 
-          <DoNotMiss />
-          {/* <NewsLetter /> */}
+          {/* <DoNotMiss /> */}
+          <NewsLetter />
         </div>
       </div>
     </section>

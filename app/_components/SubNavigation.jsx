@@ -6,12 +6,25 @@ import {
   FaMagnifyingGlass,
   FaRegMoon,
 } from "react-icons/fa6";
-import { getAllCategory, getFilteredArticles } from "../_lib/data-service";
+import Article from "@/models/ArticleModel";
+import Category from "@/models/CategoryModel";
+import { connectToDB } from "../_lib/connectDB";
 
 async function SubNavigation() {
-  const articles = await getFilteredArticles();
-  const { categories } = await getAllCategory();
-  if(!articles) return
+  await connectToDB();
+
+  // Fetch articles and categories
+  const articlesData = await Article.find().lean();
+  const categories = await Category.find().lean();
+
+  // Filter articles by status and approval
+  const status = "published";
+  const articles = articlesData
+    ?.filter((article) => article.status === status && article.isApproved)
+    ?.sort((a, b) => b.views - a.views); 
+
+  if (!articles) return;
+
   return (
     <div className="border-b-2 h-16 border-gray-100 sticky top-0 bg-white z-50 shadow-sm">
       <nav className="max-w-7xl mx-auto h-14 flex items-center justify-between relative">
@@ -39,10 +52,10 @@ async function SubNavigation() {
                 {categories?.map((item) => (
                   <li className="relative group" key={item._id}>
                     <Link
-                      href={`${item.slug}`}
+                      href={`/${item.slug}`}
                       className="text-lg font-semibold text-gray-800 hover:text-[#F80759] transition-all border-b border-gray-200 py-2"
                       passHref
-                      target="_blank"
+                      // target="_blank"
                     >
                       {item.name}
                     </Link>

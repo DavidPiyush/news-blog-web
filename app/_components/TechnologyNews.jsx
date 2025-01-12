@@ -3,7 +3,6 @@ import Link from "next/link";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { FaClock } from "react-icons/fa";
 import HeaderLevelFour from "./HeaderLevelFour";
-import HeaderLevelSix from "./HeaderLevelSix";
 import Image from "next/image";
 
 function TechnologyNews({ articles, categories }) {
@@ -29,6 +28,17 @@ function TechnologyNews({ articles, categories }) {
         categoryName: matchedCategory ? matchedCategory.name : "Unknown",
       };
     });
+
+    // show recent tech article
+const getRecentArticle = techArticles
+  ?.filter((article) => article.createdAt)
+  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  // show popular tech article
+const getPopularArticles = techArticles
+  ?.filter((item) => item.views)
+  .sort((a, b) => b.views - a.views);
+
   return (
     <section className="mt-14 space-y-10">
       <div className="max-w-6xl mx-auto">
@@ -41,7 +51,7 @@ function TechnologyNews({ articles, categories }) {
           <strong className="text-2xl">Technology Post</strong>
         </h3>
         <article className="grid grid-cols-3 justify-between items-center gap-8 ">
-          {techArticles.map((post) => (
+          {getPopularArticles.map((post) => (
             <div
               className="shadow-lg rounded-md overflow-hidden"
               key={post._id}
@@ -83,7 +93,7 @@ function TechnologyNews({ articles, categories }) {
       {/* Second row without the "Mins Read" and date section */}
       <div className="max-w-6xl mx-auto ">
         <article className="grid grid-cols-4 justify-between items-center gap-8 ">
-          {techArticles.map((post) => (
+          {getRecentArticle.map((post) => (
             <div
               className="shadow-lg rounded-md overflow-hidden"
               key={post._id}

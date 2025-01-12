@@ -4,9 +4,13 @@ import HeaderLevelFour from "./HeaderLevelFour";
 import TextDescription from "./TextDescription";
 
 function WorldNewsTop({ articles }) {
+  const getPopularArticles = articles
+    ?.filter((item) => item.views)
+    .sort((a, b) => b.views - a.views);
+    
   return (
     <>
-      {articles?.map((post) => (
+      {getPopularArticles?.map((post) => (
         <div
           className="shadow-md hover:shadow-lg rounded-lg overflow-hidden bg-white transition-all duration-300"
           key={post.id}

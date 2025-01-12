@@ -8,29 +8,35 @@ import WorldNewsTop from "./WorldNewsTop";
 import AdsHorizontal from "./AdsHorizontal";
 import NewsHeader from "./NewsHeader";
 
-function WorldNews({ articles, categories }) {
-  const worldArticles = articles
-    .filter((article) => {
-      // Find the category object that matches the name "Tech"
-      const techCategory = categories.find(
-        (category) => category.slug === "world-news"
-      );
+function WorldNews({ articles = [], categories = [] }) {
 
-      // Check if the article's category matches the found category's _id
-      return techCategory && article.categories === techCategory._id;
-    })
-    .map((article) => {
-      // Find the matching category again to append the name
-      const matchedCategory = categories.find(
-        (category) => category._id === article.categories
-      );
 
-      // Return a new object with the category name appended
-      return {
-        ...article,
-        categoryName: matchedCategory ? matchedCategory.name : "Unknown",
-      };
-    });
+   const sportsCategory = categories.find(
+     (category) => category.slug === "world-news"
+   );
+
+   if (!sportsCategory) {
+     console.warn("Sports category not found.");
+     return null; // Exit early if the category doesn't exist
+   }
+
+   // Filter articles related to the sports category
+   const worldArticles = articles
+     .filter(
+       (article) =>
+         article.categories?.toString() === sportsCategory._id.toString()
+     )
+     .map((article) => ({
+       ...article,
+       categoryName: sportsCategory.name,
+     }));
+
+   // Exit early if no sports articles are found
+   if (worldArticles.length === 0) {
+     console.warn("No sports articles found.");
+     return null;
+   }
+  
 
   return (
     <section className="mt-24">
@@ -38,10 +44,10 @@ function WorldNews({ articles, categories }) {
         {/* Left Section */}
         <div className="col-span-5 grid grid-cols-5 gap-6 scroll-smooth overflow-y-auto hide-scrollbar">
           <NewsHeader newType="World News" />
+
           {/* World News */}
           <div className="col-span-3 space-y-6">
-            <WorldNewsTop articles={worldArticles} />{" "}
-            {/* Pass articles as a prop */}
+            <WorldNewsTop articles={worldArticles} />
           </div>
 
           {/* World News Side */}
@@ -56,7 +62,6 @@ function WorldNews({ articles, categories }) {
               adText="Sponsored Ad"
             />
             <WorldNewsList articles={worldArticles} />
-            {/* Pass articles as a prop */}
           </div>
         </div>
 

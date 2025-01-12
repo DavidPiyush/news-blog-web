@@ -8,17 +8,27 @@ import {
 } from "react-icons/fa";
 import Logo from "./Logo";
 import TextDescription from "./TextDescription";
-import { getFilteredArticles } from "../_lib/data-service";
 import Link from "next/link";
-export const revalidate = 0;
+import Article from "@/models/ArticleModel";
+import { connectToDB } from "../_lib/connectDB";
 
 async function Footer() {
-  const  articles  = await getFilteredArticles();
-  const filteredArticles = articles?.filter((articleA, indexA) =>
-    articles.some(
-      (articleB, indexB) => indexA !== indexB && articleA.views > articleB.views
-    )
-  );
+  await connectToDB();
+
+  // Fetch articles and categories
+  const articles = await Article.find().lean();
+   const status = "published";
+   const articlesData = articles?.filter(
+     (article) => article.status === status && article.isApproved
+   );
+
+  const getRecentArticle = articlesData
+    ?.filter((article) => article.createdAt)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const getPopularArticles = articlesData
+    ?.filter((item) => item.views)
+    .sort((a, b) => b.views - a.views);
 
   return (
     <footer className="bg-[#0f0f11] mt-4">
@@ -26,7 +36,7 @@ async function Footer() {
         {/* About Us Section */}
         <section>
           <header className="text-white">
-          <Logo />
+            <Logo />
             <h6 className="text-white font-semibold mb-4">About Us</h6>
           </header>
           <TextDescription
@@ -88,7 +98,7 @@ async function Footer() {
             <h6 className="text-white font-semibold mb-7">Our Picks</h6>
           </header>
           <ul className="space-y-5">
-            {articles?.slice(0, 3)?.map((item, index, array) => (
+            {getRecentArticle?.slice(0, 3)?.map((item, index, array) => (
               <li
                 key={item._id}
                 className={`flex items-center space-x-4 group pb-4 ${
@@ -133,7 +143,7 @@ async function Footer() {
             <h6 className="text-white font-semibold mb-7">Most Popular</h6>
           </header>
           <ul className="space-y-5">
-            {filteredArticles?.slice(0, 3)?.map((item, index, array) => (
+            {getPopularArticles?.slice(0, 3)?.map((item, index, array) => (
               <li
                 key={item._id}
                 className={`flex items-center space-x-4 group pb-4 ${
