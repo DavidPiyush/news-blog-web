@@ -18,8 +18,8 @@ import NewsLetter from "./NewsLetter";
 import AdsVerticalBig from "./AdsVertical";
 import DangerousSetHtml from "./DangerousSetHtml";
 import CommentCard from "./CommentCard";
-function NewsPage({ article = [], user = [], articles = [],comments=[] }) {
-  
+function NewsPage({ article = [], user = [], articles = [], comments = [] }) {
+  console.log(article, "this from news page👌👌");
   return (
     <section className="mt-12 max-w-7xl mx-auto ">
       <div className="grid grid-cols-1 md:grid-cols-8 gap-10">
@@ -165,7 +165,7 @@ function NewsPage({ article = [], user = [], articles = [],comments=[] }) {
               authorBio={user?.bio}
             />
             <RelatedPosts articles={articles} />
-            <CommentCard comments={comments} id ={article._id}/>
+            <CommentCard comments={comments} id={article._id} />
             <CommentForm id={article._id} />
           </div>
         </div>

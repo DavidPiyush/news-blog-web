@@ -2,7 +2,7 @@ import WebsiteSettingComponent from "@/app/_components/WebsiteSettingComponent";
 import { connectToDB } from "@/app/_lib/connectDB";
 import WebsiteSetting from "@/models/WebsiteModel";
 export const dynamic = "force-dynamic"; // Mark the page as dynamic
-// export const revalidate = 0;
+export const revalidate = 0;
 
 async function page() {
   await connectToDB();

@@ -8,12 +8,12 @@ import {
 } from "react-icons/fa";
 import Logo from "./Logo";
 import TextDescription from "./TextDescription";
-import { getAllArticle, getFilteredArticles } from "../_lib/data-service";
+import { getFilteredArticles } from "../_lib/data-service";
 import Link from "next/link";
 
 async function Footer() {
   const  articles  = await getFilteredArticles();
-   const filteredArticles = articles.filter((article) => article.views > 50);
+   const filteredArticles = articles?.filter((article) => article.views > 50);
   return (
     <footer className="bg-[#0f0f11] mt-4">
       <div className="bg-[#0f0f11] max-w-6xl mx-auto grid grid-cols-3 py-12 gap-6">
@@ -90,7 +90,7 @@ async function Footer() {
                 }`}
               >
                 <Link
-                  href={`/${item.categorySlug}/${item.slug}`}
+                  href={`/news/${item.slug}`}
                   className="flex items-center space-x-4 w-full"
                 >
                   <img
@@ -135,7 +135,7 @@ async function Footer() {
                 }`}
               >
                 <Link
-                  href={`${item.slug}`}
+                  href={`/news/${item.slug}`}
                   className="flex items-center space-x-4 "
                 >
                   <img
@@ -149,7 +149,7 @@ async function Footer() {
                     {item.title}
                   </h4>
                   <Link
-                    href={`${item.slug}`}
+                    href={`/news/${item.slug}`}
                     className="flex justify-between text-gray-500 text-sm mt-2"
                   >
                     <span>

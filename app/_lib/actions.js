@@ -146,7 +146,7 @@ export async function createPost(articleData, formData) {
     // }
 
     // revalidateTag("article");
-    // revalidateTag("posts");
+    revalidateTag("posts");
 
     return {
       message: "Article created successfully",
@@ -202,6 +202,7 @@ export async function updatePost(articleData, formData) {
     if (!updatedArticle) {
       throw new Error("Article not found or update failed.");
     }
+    revalidateTag("posts");
 
     // revalidateTag("article");
     // revalidateTag("posts");

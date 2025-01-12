@@ -10,15 +10,27 @@ import {
 import NotFound from "@/app/not-found";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic"; // Mark the page as dynamic
+export const revalidate = 0;
 
 async function page({ params }) {
   const { url } = params;
 
   try {
-    // Fetch article based on slug (url)
-    const { article } = await getArticlesBasedOnSlug(url);
-    const { categories } = await getAllCategory();
-    const comments = await commentBasedOnPost(article?._id);
+    // Fetch data in parallel
+    const [articleData, categoriesData, filteredArticles] = await Promise.all([
+      getArticlesBasedOnSlug(url),
+      getAllCategory(),
+      getFilteredArticles(),
+    ]);
+
+    const { article } = articleData;
+    const { categories } = categoriesData;
+
+    if (!article) {
+      console.error("Article not found for URL:", url);
+      return <NotFound />;
+    }
 
     const matchedCategory = categories.find(
       (cat) => cat._id === article.categories
@@ -29,36 +41,16 @@ async function page({ params }) {
       categoryName: matchedCategory ? matchedCategory.name : "unknown",
     };
 
-    if (!article) {
-      console.error("Article not found for URL:", url);
-      return <NotFound />;
-    }
-    if (comments.length == 0) {
-      return <NotFound />;
-    }
-
-    // Fetch user based on article's author ID
     const { user } = await getUserById(article?.author);
-
-    if (!user) {
-      console.warn("Author not found for article:", article.title);
-    }
-
-    // Fetch related articles
-    const articles = await getFilteredArticles();
-
-    if (!articles || articles.length === 0) {
-      console.warn("No related articles found.");
-    }
+    const comments = await commentBasedOnPost(article?._id);
 
     return (
       <div>
-        {/* Suspense for async loading of the NewsPage component */}
         <Suspense fallback={<Spinner />}>
           <NewsPage
             article={articleWithCategory}
-            user={user || null} // Pass `null` if user not found
-            articles={articles || []} // Pass an empty array if no related articles
+            user={user || null}
+            articles={filteredArticles || []}
             comments={comments}
           />
         </Suspense>

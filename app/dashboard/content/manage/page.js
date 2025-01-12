@@ -5,7 +5,7 @@ import { getAllArticle, getAllCategory } from "@/app/_lib/data-service";
 import Link from "next/link";
 import { FaCheckCircle, FaEdit, FaRegEyeSlash } from "react-icons/fa";
 export const dynamic = "force-dynamic";
-
+export const revalidate = 0;
 
 export const metadata = {
   title: "Manage Content",

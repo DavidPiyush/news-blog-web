@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const CommentForm = ({ id }) => {
   const [formData, setFormData] = useState({
@@ -40,7 +41,8 @@ const CommentForm = ({ id }) => {
         saveInfo: false,
       });
 
-      alert("Comment submitted successfully!"); // Optional feedback to the user
+      toast.success("Comment submitted successfully!"); // Optional feedback to the user
+      window?.location?.reload();
     } catch (error) {
       console.error(
         "Error submitting comment:",
