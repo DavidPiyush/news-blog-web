@@ -64,7 +64,6 @@ export async function updateUserSocialLinks(formData) {
     youtube,
   };
 
-
   try {
     // Connect to the database
     await connectToDB();
@@ -88,7 +87,7 @@ export async function updateUserSocialLinks(formData) {
 
     await newNotification.save();
 
-    revalidatePath('dashboard/setting/social')
+    revalidatePath("dashboard/setting/social");
     return { success: true, message: "update is sucessfull" };
   } catch (error) {
     console.error("Error updating social links:", error);
@@ -146,7 +145,7 @@ export async function createPost(articleData, formData) {
     //   );
     // }
 
-   revalidateTag("posts");
+    revalidateTag("posts");
 
     return {
       message: "Article created successfully",
@@ -230,7 +229,7 @@ export async function postApproval(formData) {
       { new: true, runValidators: true }
     );
 
-   revalidateTag("posts");
+    revalidateTag("posts");
     return { success: true };
   } catch (error) {
     console.error("Error during approval:", error);
@@ -249,7 +248,7 @@ export async function postDelete(formData) {
 
     await Article.findByIdAndDelete(id);
 
-    revalidateTag("DeleteArticle");
+    revalidateTag("posts");
   } catch (error) {
     console.error("Error in postDelete:", error);
     throw new Error("Failed to delete article");
@@ -280,7 +279,7 @@ export async function postPublished(formData) {
       runValidators: true,
     });
 
-    revalidateTag('posts')
+    revalidateTag("posts");
 
     return { success: true };
   } catch (error) {
