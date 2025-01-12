@@ -270,7 +270,6 @@ export async function postPublished(formData) {
       throw new Error("Missing required fields: id or status.");
     }
 
-    
     // Determine the new status
     const updateData = {
       status:
@@ -399,4 +398,18 @@ export async function deleteUserByAdmin(formData) {
   await deleteUser(id);
 
   revalidatePath("/dashboard", "page");
+}
+
+// delete notification
+
+export async function deleteNotification(formData) {
+  const id = formData.get("id");
+  if (!id) throw new Error("Notification ID is missing in the form Data");
+
+  await connectToDB();
+
+  await Notification.findByIdAndDelete(id);
+  revalidatePath("/dashboard/profile/notification");
+
+   return { success: true};
 }

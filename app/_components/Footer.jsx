@@ -14,7 +14,12 @@ export const revalidate = 0;
 
 async function Footer() {
   const  articles  = await getFilteredArticles();
-   const filteredArticles = articles?.filter((article) => article.views > 50);
+  const filteredArticles = articles?.filter((articleA, indexA) =>
+    articles.some(
+      (articleB, indexB) => indexA !== indexB && articleA.views > articleB.views
+    )
+  );
+
   return (
     <footer className="bg-[#0f0f11] mt-4">
       <div className="bg-[#0f0f11] max-w-6xl mx-auto grid grid-cols-3 py-12 gap-6">

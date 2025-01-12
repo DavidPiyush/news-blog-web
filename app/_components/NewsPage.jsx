@@ -19,7 +19,6 @@ import AdsVerticalBig from "./AdsVertical";
 import DangerousSetHtml from "./DangerousSetHtml";
 import CommentCard from "./CommentCard";
 function NewsPage({ article = [], user = [], articles = [], comments = [] }) {
-  console.log(article, "this from news page👌👌");
   return (
     <section className="mt-12 max-w-7xl mx-auto ">
       <div className="grid grid-cols-1 md:grid-cols-8 gap-10">
@@ -80,7 +79,7 @@ function NewsPage({ article = [], user = [], articles = [], comments = [] }) {
 
             <div className="flex items-center gap-2">
               <FaEye size={16} />
-              <span>{article.views}</span>
+              <span>{article.views + " " + "Views"}</span>
             </div>
 
             <div className="flex items-center gap-2">

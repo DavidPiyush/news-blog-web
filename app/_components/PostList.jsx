@@ -42,7 +42,10 @@ const PostList = ({ articles = [], header }) => {
       <ul className="space-y-6">
         {currentPosts.map((post) => (
           <li key={post._id} className="flex items-start border-b py-4">
-            <Link href={post.slug} className="flex items-start w-full">
+            <Link
+              href={`/news/${post.slug}`}
+              className="flex items-start w-full"
+            >
               <Image
                 src={post.coverImage || "/default-image.jpg"} // Default image URL
                 alt={post.title}
@@ -50,22 +53,22 @@ const PostList = ({ articles = [], header }) => {
                 height={96}
                 className="w-24 h-24 object-cover rounded-lg mr-6"
               />
-              <div className="flex flex-col w-full">
+              <articles className="flex flex-col w-full">
                 <h3 className="text-lg font-semibold">{post.title}</h3>
-                <div className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400">
                   {post.publishedAt && !isNaN(new Date(post.publishedAt))
                     ? format(new Date(post.publishedAt), "MMMM dd, yyyy")
                     : "Date not available"}{" "}
                   | {post?.author?.name} | Views: {post.views}
-                </div>
-                <div
+                </p>
+                <p
                   className={`mt-2 px-3 py-1 rounded-lg ${getCategoryBackgroundColor(
                     post.category || "Unknown Category"
                   )}`}
                 >
                   {post.category}
-                </div>
-              </div>
+                </p>
+              </articles>
             </Link>
           </li>
         ))}

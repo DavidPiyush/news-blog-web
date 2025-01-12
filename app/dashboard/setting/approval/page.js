@@ -25,7 +25,7 @@ async function page({ searchParams }) {
 
   // Find articles with the filter applied
   const articles = await Article.find(filter);
-  console.log(articles.length);
+  
 
   // If no articles are found, return an empty response
   if (!articles.length) {
