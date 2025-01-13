@@ -29,15 +29,15 @@ function TechnologyNews({ articles, categories }) {
       };
     });
 
-    // show recent tech article
-const getRecentArticle = techArticles
-  ?.filter((article) => article.createdAt)
-  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  // show recent tech article
+  const getRecentArticle = techArticles
+    ?.filter((article) => article.createdAt)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // show popular tech article
-const getPopularArticles = techArticles
-  ?.filter((item) => item.views)
-  .sort((a, b) => b.views - a.views);
+  const getPopularArticles = techArticles
+    ?.filter((item) => item.views)
+    .sort((a, b) => b.views - a.views);
 
   return (
     <section className="mt-14 space-y-10">
@@ -112,8 +112,8 @@ const getPopularArticles = techArticles
               <div className="px-4 py-6">
                 <HeaderLevelFour
                   title={
-                    post.title.length > 50
-                      ? post.title.substring(0, 50) + "..."
+                    post.title.length > 40
+                      ? post.title.substring(0, 40) + "..."
                       : post.title
                   }
                   href={`news/${post.slug}`}

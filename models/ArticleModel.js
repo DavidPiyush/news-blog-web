@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import User from "./UserModel";
 
 const articleSchema = new mongoose.Schema(
   {

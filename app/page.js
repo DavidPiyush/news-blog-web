@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Header from "./_components/Header";
 import { connectToDB } from "./_lib/connectDB";
 import Article from "@/models/ArticleModel";
@@ -13,7 +12,7 @@ import AdsHorizontalBig from "./_components/AdsHorizontalBig";
 import TechnologyNews from "./_components/TechnologyNews";
 import Footer from "./_components/Footer";
 
-export const dynamic = "force-dynamic"; // Mark the page as dynamic
+// export const dynamic = "force-dynamic"; // Mark the page as dynamic
 
 export const metadata = {
   title: "News App",
@@ -25,7 +24,7 @@ export default async function Home() {
     await connectToDB();
 
     // Fetch articles and categories
-    const articlesData = await Article.find().populate("author").lean();
+    const articlesData = await Article.find()?.populate("author").lean();
     const categories = await Category.find().lean();
 
     // Filter articles by status and approval
